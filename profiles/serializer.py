@@ -3,7 +3,7 @@ from . import models
 
 
 # Profile Serializer
-class ProfileSerializer(ModelSerializer):
+class ProfileSerializer(serializers.ModelSerializer):
     user = serializers.SlugRelatedField(
         read_only=True, slug_field='email')
 

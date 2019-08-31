@@ -1,12 +1,14 @@
 from django.urls import path, include, re_path
+from rest_framework.routers import DefaultRouter
 from . import views
 
 
+router = DefaultRouter()
+
+router.register('profile', views.ProfileViewSet)
 urlpatterns = [
     # User PREFIX (Closed URLs)
     path('user/', include([
-        # Profile Create URL
-        # path('profile/', views.userProfileCreateAPI,
-        #      name="user_profile_create"),
+        path('', include(router.urls)),
     ])),
 ]
