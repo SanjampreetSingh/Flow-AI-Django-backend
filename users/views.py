@@ -7,6 +7,7 @@ import time
 import json
 # django
 from django.contrib.sites.shortcuts import get_current_site
+from django.contrib.auth import get_user_model
 from django.core.mail import EmailMessage
 from django.http import HttpResponse, Http404
 from django.shortcuts import render
@@ -21,8 +22,8 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes, authentication_classes
 
 # Local
-from . import models
-from . import serializer
+from .models import (Users)
+from .serializer import (UserSerializer)
 from .token import signup
 
 
@@ -34,11 +35,11 @@ def register(request):
 
         # check if email exists
         email = request.data.get('email')
-        user = models.Users.objects.filter(email=email).exists()
+        user = Users.objects.filter(email=email).exists()
         if user is False:
 
             # add data to user table
-            serializer = serializer.UserSerializer(data=request.data)
+            serializer = UserSerializer(data=request.data)
             if serializer.is_valid():
                 serializer.validated_data['active'] = False
                 serializer.validated_data['verified'] = False
