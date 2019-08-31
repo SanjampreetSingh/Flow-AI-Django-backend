@@ -73,3 +73,27 @@ def register(request):
             return Response('User already exists', status=status.HTTP_400_BAD_REQUEST)
     else:
         return Response('Bad Request', status=status.HTTP_400_BAD_REQUEST)
+
+
+# Verify email
+@api_view(['POST', "PUT"])
+@permission_classes((AllowAny,))
+def verifyEmail(request, uidb64, token):
+    # Check user exists by decoding url code
+    try:
+        uid = force_text(urlsafe_base64_decode(uidb64))
+        user = Users.objects.get(pk=uid)
+    except(TypeError, ValueError, OverflowError, User.DoesNotExist):
+        user = None
+
+    # verify user and update verified, active status
+    if user is not None and signup.account_activation_token.check_token(user, token):
+        user = Users.objects.filter(pk=uid).update(verified=True, active=True)
+
+        return Response({'user': user,
+                         'message': 'Thank you for your email confirmation. Now you can login your account.'
+                         },
+                        status=status.HTTP_202_ACCEPTED)
+    else:
+        return Response({'message': 'Activation link is invalid!'},
+                        status=status.HTTP_400_BAD_REQUEST)
