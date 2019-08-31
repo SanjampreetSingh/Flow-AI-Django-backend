@@ -1,10 +1,3 @@
-from datetime import datetime
-import hashlib
-import hmac
-# time SDK
-import time
-# json SDK
-import json
 # django
 from django.contrib.sites.shortcuts import get_current_site
 from django.contrib.auth import get_user_model
