@@ -8,7 +8,7 @@ from datetime import datetime
 class UserManager(BaseUserManager):
     use_in_migrations = True
 
-    def create_user(self, email, password=None, user_type=None, is_active=True, is_staff=False, is_admin=False, is_verified=False, is_complete=False, steps=None):
+    def _create_user(self, email, password=None, user_type=None, is_active=True, is_staff=False, is_admin=False, is_verified=False, is_complete=False, steps=None):
         if not email:
             raise ValueError("User must have an Email")
         if not password:
@@ -28,7 +28,7 @@ class UserManager(BaseUserManager):
         return user
 
     def create_superuser(self, email, password=None, user_type='AD', steps='NA'):
-        user = self.create_user(
+        user = self._create_user(
             email,
             password=password,
             user_type=user_type,
@@ -91,24 +91,12 @@ class Users(AbstractBaseUser):
         return True
 
     @property
-    def is_active(self):
-        return self.active
-
-    @property
     def is_staff(self):
         return self.staff
 
     @property
     def is_admin(self):
         return self.admin
-
-    @property
-    def is_verified(self):
-        return self.verified
-
-    @property
-    def is_complete(self):
-        return self.complete
 
     class Meta:
         db_table = 'flow_user'

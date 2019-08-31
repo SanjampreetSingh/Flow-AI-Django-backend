@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'users',
     'rest_framework',
 ]
 
@@ -124,7 +125,7 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-UTH_USER_MODEL = 'users.Users'
+AUTH_USER_MODEL = 'users.Users'
 
 
 # CORS Settings
