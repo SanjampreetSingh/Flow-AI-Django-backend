@@ -1,4 +1,4 @@
-# django
+# Django
 from django.contrib.sites.shortcuts import get_current_site
 from django.contrib.auth import get_user_model
 from django.core.mail import EmailMessage
@@ -14,10 +14,21 @@ from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes, authentication_classes
 
+# Django Rest Framework JWT
+from rest_framework_jwt.authentication import JSONWebTokenAuthentication
+from rest_framework_jwt.views import ObtainJSONWebToken
+from rest_framework_jwt.settings import api_settings
+
 # Local
 from .models import (Users)
 from .serializer import (UserSerializer)
 from .token import signup
+
+# Payload Custom Variables
+jwt_payload_handler = api_settings.JWT_PAYLOAD_HANDLER
+jwt_response_payload_handler = api_settings.JWT_RESPONSE_PAYLOAD_HANDLER
+jwt_encode_handler = api_settings.JWT_ENCODE_HANDLER
+jwt_decode_handler = api_settings.JWT_DECODE_HANDLER
 
 
 # register
@@ -76,7 +87,7 @@ def verifyEmail(request, uidb64, token):
     try:
         uid = force_text(urlsafe_base64_decode(uidb64))
         user = Users.objects.get(pk=uid)
-    except(TypeError, ValueError, OverflowError, User.DoesNotExist):
+    except(TypeError, ValueError, OverflowError, Users.DoesNotExist):
         user = None
 
     # verify user and update verified, active status
@@ -90,3 +101,48 @@ def verifyEmail(request, uidb64, token):
     else:
         return Response({'message': 'Activation link is invalid!'},
                         status=status.HTTP_400_BAD_REQUEST)
+
+
+# Login class
+class Login(ObtainJSONWebToken):
+    def post(self, request, *args, **kwargs):
+        response = super(Login, self).post(request, *args, **kwargs)
+        res = response.data
+        token = res.get('token')
+
+        # token ok, get user
+        if token:
+            user = jwt_decode_handler(token)  # aleady json - don't serialize
+
+        else:  # if none, try auth by email
+            user_data = request.data  # try and find email in request
+            password = user_data.get('password')
+            email = user_data.get('email')
+            if email is None or password is None:
+                return Response({'success': False,
+                                 'message': 'Missing or incorrect credentials',
+                                 'data': user_data},
+                                status=status.HTTP_400_BAD_REQUEST)
+            try:
+                user = Users.objects.get(email=email)
+            except:
+                return Response({'success': False,
+                                 'message': 'User not found',
+                                 'data': user_data},
+                                status=status.HTTP_404_NOT_FOUND)
+
+            if not user.check_password(password):
+                return Response({'success': False,
+                                 'message': 'Incorrect password',
+                                 'data': user_data},
+                                status=status.HTTP_403_FORBIDDEN)
+
+            user = UserSerializer(user).data
+            payload = jwt_payload_handler(user)
+            token = jwt_encode_handler(payload)
+
+        return Response({'success': True,
+                         'message': 'Successfully logged in',
+                         'token': token,
+                         'user': user},
+                        status=status.HTTP_200_OK)
