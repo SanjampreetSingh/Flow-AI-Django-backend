@@ -104,37 +104,36 @@ def verifyEmail(request, uidb64, token):
 
 
 # Login class
-class Login(ObtainJSONWebToken):
+class LoginAPI(ObtainJSONWebToken):
     def post(self, request, *args, **kwargs):
-        response = super(Login, self).post(request, *args, **kwargs)
+        response = super(LoginAPI, self).post(request, *args, **kwargs)
         res = response.data
         token = res.get('token')
 
         # token ok, get user
         if token:
             user = jwt_decode_handler(token)  # aleady json - don't serialize
-
         else:  # if none, try auth by email
-            user_data = request.data  # try and find email in request
-            password = user_data.get('password')
-            email = user_data.get('email')
+            req = request.data  # try and find email in request
+            password = req.get('password')
+            email = req.get('email')
             if email is None or password is None:
                 return Response({'success': False,
                                  'message': 'Missing or incorrect credentials',
-                                 'data': user_data},
+                                 'data': req},
                                 status=status.HTTP_400_BAD_REQUEST)
             try:
-                user = Users.objects.get(email=email)
+                user = User.objects.get(email=email)
             except:
                 return Response({'success': False,
                                  'message': 'User not found',
-                                 'data': user_data},
+                                 'data': req},
                                 status=status.HTTP_404_NOT_FOUND)
 
             if not user.check_password(password):
                 return Response({'success': False,
                                  'message': 'Incorrect password',
-                                 'data': user_data},
+                                 'data': req},
                                 status=status.HTTP_403_FORBIDDEN)
 
             user = UserSerializer(user).data
