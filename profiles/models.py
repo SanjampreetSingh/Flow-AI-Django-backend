@@ -14,7 +14,7 @@ def profile_directory_path(instance, filename):
 
 
 #   Profile Model Class
-class Profile(models.Model):
+class Profiles(models.Model):
     MALE = 'M'
     FEMALE = 'F'
     OTHERS = 'O'
