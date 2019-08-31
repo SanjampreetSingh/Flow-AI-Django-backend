@@ -76,8 +76,12 @@ WSGI_APPLICATION = 'flow.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'flow-app',
+        'USER': 'postgres',
+        'PASSWORD': '12346789',
+        'HOST': 'localhost',
+        'PORT': '5432'
     }
 }
 
@@ -119,3 +123,13 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
 STATIC_URL = '/static/'
+
+UTH_USER_MODEL = 'users.Users'
+
+
+# CORS Settings
+CORS_ORIGIN_ALLOW_ALL = True
+CORS_ORIGIN_WHITELIST = [
+    # 'http://localhost:8000',
+    # 'http://localhost:8080',
+]
