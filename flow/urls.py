@@ -22,5 +22,6 @@ urlpatterns = [
         # users api urls
         path('', include('users.urls')),
         path('', include('profiles.urls')),
+        path('', include('apis.urls')),
     ])),
 ]
