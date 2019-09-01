@@ -6,6 +6,7 @@ from . import views
 router = DefaultRouter()
 
 router.register('profile', views.ProfileViewSet)
+router.register('profile/picture', views.ProfilePictureViewSet)
 urlpatterns = [
     # User PREFIX (Closed URLs)
     path('user/', include([

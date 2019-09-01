@@ -18,8 +18,8 @@ from rest_framework_jwt.authentication import JSONWebTokenAuthentication
 
 # Local
 from users.models import (Users)
-from .models import (Profiles)
-from .serializer import (ProfileSerializer)
+from .models import (Profiles, ProfilePicture)
+from .serializer import (ProfileSerializer, ProfilePictureSerializer)
 
 
 class ProfileViewSet(viewsets.ModelViewSet):
@@ -44,3 +44,10 @@ class ProfileViewSet(viewsets.ModelViewSet):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         else:
             return Response('Bad Request', status=status.HTTP_400_BAD_REQUEST)
+
+
+class ProfilePictureViewSet(viewsets.ModelViewSet):
+    queryset = ProfilePicture.objects.all()
+    serializer_class = ProfilePictureSerializer
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [JSONWebTokenAuthentication]
