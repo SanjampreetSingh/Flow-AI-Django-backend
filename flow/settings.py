@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'users',
     'profiles',
     'apis',
+    'plans',
 ]
 
 MIDDLEWARE = [

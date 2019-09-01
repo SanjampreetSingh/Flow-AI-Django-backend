@@ -5,10 +5,17 @@ from . import views
 
 router = DefaultRouter()
 
-# router.register('profile/picture', views.ProfilePictureViewSet)
 urlpatterns = [
-    # User PREFIX (Closed URLs)
+    # User PREFIX
     path('user/', include([
-        path('', include(router.urls)),
+        # Plan URL
+        path('plan/', views.PlanListUser.as_view(), name="user_plan_list"),
+    ])),
+
+    # Frontend PREFIX
+    path('frontend/', include([
+        # Plan URL
+        path('plan/', views.PlanListFrontend.as_view(),
+             name='public_plan_list'),
     ])),
 ]
