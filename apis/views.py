@@ -100,3 +100,17 @@ class TrialApiImageList(ListAPIView):
         else:
             queryset = ApiImage.objects.all().exclude(trial=False)
         return queryset
+
+
+# Api Category List
+class ApiCategoryList(ListAPIView):
+    permission_classes = (IsAuthenticated)
+    authentication_class = (JSONWebTokenAuthentication,)
+    queryset = ApiCategory.objects.all()
+    serializer_class = ApiCategorySerializer
+
+
+class TrailApiCategoryList(ListAPIView):
+    permission_classes = (AllowAny,)
+    queryset = ApiCategory.objects.all().exclude(trial=False)
+    serializer_class = ApiCategorySerializer

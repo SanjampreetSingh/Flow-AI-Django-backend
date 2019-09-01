@@ -10,15 +10,24 @@ urlpatterns = [
     path('user/', include([
         path('', include(router.urls)),
 
-        # Api's Image List
+        # Api's List URL
+        path('api/', views.ApiList.as_view(), name="user_api_list"),
+
+        # Api's Image List URL
         path('api/image/', views.ApiImageList.as_view(),
              name="user_api_image_list"),
-    ])),
+
+        # Api's Retrieve URL
+        re_path(r'api/detail/(?P<pk>\d+)$',
+                views.ApiRetrieve.as_view(), name="user_api_retrieve"),
+
+        # Api Category
+         path('api/category/list/', views.ApiCategoryList.as_view(),
+              name='api_category_list'),
+         ])),
 
     # Frontend PREFIX
     path('frontend/', include([
-         path('', include(router.urls)),
-
          # Api's Image List
          path('api/image/', views.TrialApiImageList.as_view(),
               name="public_api_image_list"),
@@ -30,5 +39,8 @@ urlpatterns = [
          re_path(r'api/(?P<pk>\d+)/detail/$',
                  views.TrialApiRetrieve.as_view(), name="public_api_retrieve"),
 
+         # Api Category
+         path('api/category/list/', views.TrailApiCategoryList.as_view(),
+              name='api_category_list_frontend'),
          ])),
 ]
