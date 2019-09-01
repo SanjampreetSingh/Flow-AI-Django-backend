@@ -122,7 +122,7 @@ class LoginAPI(ObtainJSONWebToken):
                                  'data': req},
                                 status=status.HTTP_400_BAD_REQUEST)
             try:
-                user = User.objects.get(email=email)
+                user = Users.objects.get(email=email)
             except:
                 return Response({'success': False,
                                  'message': 'User not found',
