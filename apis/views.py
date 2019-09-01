@@ -9,7 +9,7 @@ from django.http import HttpResponse, Http404
 from rest_framework import viewsets, status
 from rest_framework.permissions import IsAuthenticated, AllowAny, IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
-from rest_framework.generics import ListAPIView
+from rest_framework.generics import ListAPIView, RetrieveAPIView
 from rest_framework.decorators import api_view, permission_classes, authentication_classes
 # Django Rest Framework JWT
 from rest_framework_jwt.authentication import JSONWebTokenAuthentication
@@ -19,6 +19,51 @@ from users.models import (Users)
 from .models import (Apis, ApiImage, ApiCategory)
 from .serializer import (
     ApiSerializer, ApiImageSerializer, ApiCategorySerializer)
+
+
+# Api's List
+class ApiList(ListAPIView):
+    permission_classes = (IsAuthenticated)
+    authentication_class = (JSONWebTokenAuthentication,)
+    queryset = Apis.objects.all()
+    serializer_class = ApiSerializer
+
+    def get_queryset(self):
+        data = self.request.data
+        if 'category' in data:
+            queryset = Apis.objects.filter(category=data.get('category'))
+        else:
+            queryset = Apis.objects.all()
+        return queryset
+
+
+class TrialApiList(ListAPIView):
+    permission_classes = (AllowAny,)
+    queryset = Apis.objects.all().exclude(trial=False)
+    serializer_class = ApiSerializer
+
+    def get_queryset(self):
+        data = self.request.data
+        if 'category' in data:
+            queryset = Apis.objects.filter(
+                category=data.get('category')).exclude(trial=False)
+        else:
+            queryset = Apis.objects.all().exclude(trial=False)
+        return queryset
+
+
+# Api's Retrieve
+class ApiRetrieve(RetrieveAPIView):
+    permission_classes = (IsAuthenticated)
+    authentication_class = (JSONWebTokenAuthentication,)
+    queryset = Apis.objects.all()
+    serializer_class = ApiSerializer
+
+
+class TrialApiRetrieve(RetrieveAPIView):
+    permission_classes = (AllowAny,)
+    queryset = Apis.objects.all().exclude(trial=False)
+    serializer_class = ApiSerializer
 
 
 # Api's Image List
