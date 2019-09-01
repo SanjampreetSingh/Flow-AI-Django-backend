@@ -8,7 +8,7 @@ router = DefaultRouter()
 router.register('profile', views.ProfileViewSet)
 router.register('profile/picture', views.ProfilePictureViewSet)
 urlpatterns = [
-    # User PREFIX (Closed URLs)
+    # User PREFIX
     path('user/', include([
         path('', include(router.urls)),
     ])),

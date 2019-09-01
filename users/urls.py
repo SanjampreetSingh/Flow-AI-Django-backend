@@ -4,16 +4,16 @@ from . import views
 
 
 urlpatterns = [
-    # Register URL
+    # Register
     path('register/', views.register, name='user_register'),
 
-    # Activate URL
+    # Activate
     re_path(
         r'^activate/(?P<uidb64>[0-9A-Za-z_\-]+)/(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/$', views.verifyEmail, name='activate'),
 
-    # Login URL
+    # Login
     path('authenticate/', views.LoginAPI.as_view()),
 
-    # Auth URL
+    # Auth
     path('verify/', verify_jwt_token),
 ]
