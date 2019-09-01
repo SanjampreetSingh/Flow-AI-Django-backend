@@ -3,24 +3,24 @@ from . import models
 
 
 # API Category Serializer
-class ApiCategorySerializer(ModelSerializer):
+class ApiCategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = models.ApiCategory
         fields = "__all__"
 
 
 # Api Serializer
-class ApiSerializer(ModelSerializer):
+class ApiSerializer(serializers.ModelSerializer):
     category = serializers.SlugRelatedField(
         read_only=True, slug_field='name')
 
     class Meta:
-        model = models.Api
+        model = models.Apis
         fields = "__all__"
 
 
 # Api Image Serializer
-class ApiImageSerializer(ModelSerializer):
+class ApiImageSerializer(serializers.ModelSerializer):
     category = serializers.SlugRelatedField(
         read_only=True, slug_field='name')
 

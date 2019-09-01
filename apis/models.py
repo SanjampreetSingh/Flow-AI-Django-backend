@@ -19,7 +19,7 @@ class ApiCategory(models.Model):
 
 
 #   API Model Class
-class Api(models.Model):
+class Apis(models.Model):
     name = models.CharField("Name", "name", max_length=255)
     category = models.ForeignKey(ApiCategory, on_delete=models.CASCADE)
     trial = models.BooleanField("Has Trial", "trial", default=False)
@@ -64,7 +64,7 @@ def api_image_directory_path(instance, filename):
 
 
 class ApiImage(models.Model):
-    api = models.ForeignKey(Api, on_delete=models.CASCADE)
+    api = models.ForeignKey(Apis, on_delete=models.CASCADE)
     category = models.ForeignKey(ApiCategory, on_delete=models.CASCADE)
     image_url = models.CharField(
         "Image URL", "image_url", max_length=2083, blank=True, null=True)

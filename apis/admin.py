@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import (Api, ApiCategory, ApiImage)
+from .models import (Apis, ApiCategory, ApiImage)
 
 
 class ApiAdmin(admin.ModelAdmin):
@@ -8,9 +8,9 @@ class ApiAdmin(admin.ModelAdmin):
                     'active', 'recommendations', 'price')
 
     class Meta:
-        model = Api
+        model = Apis
 
 
-admin.site.register(Api, ApiAdmin)
+admin.site.register(Apis, ApiAdmin)
 admin.site.register(ApiCategory)
 admin.site.register(ApiImage)
