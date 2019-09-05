@@ -44,16 +44,15 @@ def register(request):
             # add data to user table
             serializer = UserSerializer(data=request.data)
             if serializer.is_valid():
-                serializer.validated_data['active'] = False
+                serializer.validated_data['active'] = True
                 serializer.validated_data['verified'] = False
                 serializer.validated_data['complete'] = False
                 serializer.validated_data['user_type'] = 'IN'
-                serializer.validated_data['steps'] = 'NS'
                 user = serializer.save()
 
                 # email sending code
                 current_site = get_current_site(request)
-                mail_subject = 'Activate your account.'
+                mail_subject = 'Verify Your E-mail Address.'
                 message = render_to_string('verify_email.html', {
                     'user': user,
                     'domain': current_site.domain,
@@ -67,7 +66,7 @@ def register(request):
                 email.send()
 
                 return Response({'success': True,
-                                 'message': 'Please confirm your email address to complete the registration',
+                                 'message': 'User Registered Successfully',
                                  'data': serializer.data},
                                 status=status.HTTP_201_CREATED)
             else:
@@ -94,7 +93,7 @@ def verifyEmail(request, uidb64, token):
         user = Users.objects.filter(pk=uid).update(verified=True, active=True)
 
         return Response({'user': user,
-                         'message': 'Thank you for your email confirmation. Now you can login your account.'
+                         'message': 'Email Verified.'
                          },
                         status=status.HTTP_202_ACCEPTED)
     else:

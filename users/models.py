@@ -8,7 +8,7 @@ from datetime import datetime
 class UserManager(BaseUserManager):
     use_in_migrations = True
 
-    def _create_user(self, email, password=None, user_type=None, is_active=True, is_staff=False, is_admin=False, is_verified=False, is_complete=False, steps=None):
+    def _create_user(self, email, password=None, user_type=None, is_active=True, is_staff=False, is_admin=False, is_verified=False, is_complete=False):
         if not email:
             raise ValueError("User must have an Email")
         if not password:
@@ -23,11 +23,10 @@ class UserManager(BaseUserManager):
         user.admin = is_admin
         user.verified = is_verified
         user.complete = is_complete
-        user.steps = steps
         user.save(using=self._db)
         return user
 
-    def create_superuser(self, email, password=None, user_type='AD', steps='NA'):
+    def create_superuser(self, email, password=None, user_type='AD'):
         user = self._create_user(
             email,
             password=password,
@@ -36,7 +35,6 @@ class UserManager(BaseUserManager):
             is_staff=True,
             is_admin=True,
             is_complete=True,
-            steps=steps
         )
         return user
 
@@ -44,38 +42,24 @@ class UserManager(BaseUserManager):
 class Users(AbstractBaseUser):
     ADMIN = 'AD'
     INDIVIDUAL = 'IN'
-    COMPANY = 'CO'
     USER_TYPE = (
         (ADMIN, 'Admin'),
         (INDIVIDUAL, 'Individual'),
-        (COMPANY, 'Company'),
     )
 
-    NOTAPPLICABLE = 'NA'
-    NOTSTARTED = 'NS'
-    COMPLETE = 'CP'
-    STEPS = (
-        (NOTSTARTED, 'Not Started'),
-        (NOTAPPLICABLE, 'Not Applicable'),
-        (COMPLETE, 'Complete'),
-    )
-
-    email = models.EmailField('email address', unique=True, max_length=255)
+    email = models.EmailField('Email Address', unique=True, max_length=255)
     user_type = models.CharField(
         max_length=2, choices=USER_TYPE, null=True, blank=True, default=INDIVIDUAL)
-    active = models.BooleanField("Active status", default=True)  # can login
+    active = models.BooleanField("Active", default=True)  # can login
     complete = models.BooleanField(
         "Profile Complete", default=False)  # profile complete
-    staff = models.BooleanField(
-        "Staff status", default=False)  # staff user non super user
-    admin = models.BooleanField("Admin status", default=False)  # super user
-    verified = models.BooleanField("Verification status", default=False)
-    steps = models.CharField(
-        max_length=2, choices=STEPS, blank=True, null=True, default=NOTSTARTED)
+    staff = models.BooleanField("Staff", default=False)  # staff user
+    admin = models.BooleanField("Admin", default=False)  # super user
+    verified = models.BooleanField("Verified", default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now_add=True)
 
-    USERNAME_FIELD = 'email'  # username
+    USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
 
     objects = UserManager()

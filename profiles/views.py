@@ -25,23 +25,6 @@ class ProfileViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
     authentication_classes = [JSONWebTokenAuthentication]
 
-    def create(self, request):
-        if request.method == 'POST':
-            serializer = ProfileSerializer(data=request.data)
-            if serializer.is_valid():
-                serializer.validated_data['user'] = request.user
-                serializer.save()
-                user = Users.objects.filter(
-                    id=request.user.id).update(steps='CP', complete=True)
-                return Response({'success': True,
-                                 'message': 'Profile Created',
-                                 'data': serializer.data},
-                                status=status.HTTP_201_CREATED)
-
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        else:
-            return Response('Bad Request', status=status.HTTP_400_BAD_REQUEST)
-
 
 class ProfilePictureViewSet(viewsets.ModelViewSet):
     queryset = ProfilePicture.objects.all()

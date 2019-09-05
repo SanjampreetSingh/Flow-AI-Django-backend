@@ -15,7 +15,6 @@ def jwt_payload_handler(user):
         'email': user.email,
         'user_type': user.user_type,
         'is_complete': user.complete,
-        'steps': user.steps,
         'exp': datetime.utcnow() + api_settings.JWT_EXPIRATION_DELTA,
         'orig_iat': timegm(
             datetime.utcnow().utctimetuple()
@@ -35,7 +34,6 @@ def jwt_response_payload_handler(token, user=None, request=None):
         'email': user.email,
         'user_type': user.user_type,
         'is_complete': user.complete,
-        'steps': user.steps,
         'exp': datetime.utcnow() + api_settings.JWT_EXPIRATION_DELTA,
         'orig_iat': timegm(
             datetime.utcnow().utctimetuple()
