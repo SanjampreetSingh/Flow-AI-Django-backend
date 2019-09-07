@@ -1,8 +1,10 @@
+import json
+
 # Django
 from django.contrib.sites.shortcuts import get_current_site
 from django.contrib.auth import get_user_model
 from django.core.mail import EmailMessage
-from django.http import HttpResponse, Http404
+from django.http import HttpResponse, Http404, JsonResponse
 from django.template.loader import render_to_string
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes, force_text
@@ -140,6 +142,18 @@ class LoginAPI(ObtainJSONWebToken):
 
         return Response({'success': True,
                          'message': 'Successfully logged in',
-                         'token': token,
-                         'user': user},
+                         'token': token},
                         status=status.HTTP_200_OK)
+
+
+@api_view(['GET'])
+@permission_classes((AllowAny,))
+def get_user(request):
+    uid = str(request.user)
+    user = Users.objects.get(id=uid)
+    serializer = UserSerializer(user).data
+
+    return Response({'success': True,
+                     'message': 'Successfully logged in',
+                     'user': serializer},
+                    status=status.HTTP_200_OK)
