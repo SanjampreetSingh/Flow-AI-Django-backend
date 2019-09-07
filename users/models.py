@@ -2,9 +2,12 @@ from django.db import models
 from django.contrib.auth.models import (
     AbstractBaseUser, BaseUserManager, PermissionsMixin)
 from datetime import datetime
-
+import random
+import string
 
 #   User Model Class
+
+
 class UserManager(BaseUserManager):
     use_in_migrations = True
 
@@ -24,6 +27,17 @@ class UserManager(BaseUserManager):
         user.verified = is_verified
         user.complete = is_complete
         user.save(using=self._db)
+        return user
+
+    def create_user(self, email, password=None, user_type='IN'):
+        user = self._create_user(
+            email,
+            password=''.join(random.choices(
+                string.ascii_letters + string.digits, k=16)),
+            user_type=user_type,
+            is_verified=False,
+            is_complete=False,
+        )
         return user
 
     def create_superuser(self, email, password=None, user_type='AD'):
