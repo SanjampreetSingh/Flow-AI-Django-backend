@@ -11,7 +11,7 @@ from django.utils.encoding import force_bytes, force_text
 
 # Django Rest Framework Files
 from rest_framework import viewsets, status
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes, authentication_classes
 
@@ -92,7 +92,7 @@ def verifyEmail(request, uidb64, token):
 
     # verify user and update verified, active status
     if user is not None and signup.account_activation_token.check_token(user, token):
-        user = Users.objects.filter(pk=uid).update(verified=True, active=True)
+        user = Users.objects.filter(pk=uid).update(verified=True)
 
         return Response({'user': user,
                          'message': 'Email Verified.'
@@ -147,13 +147,20 @@ class LoginAPI(ObtainJSONWebToken):
 
 
 @api_view(['GET'])
-@permission_classes((AllowAny,))
+@permission_classes((IsAuthenticated,))
+@authentication_classes((JSONWebTokenAuthentication,))
 def get_user(request):
-    uid = str(request.user)
-    user = Users.objects.get(id=uid)
-    serializer = UserSerializer(user).data
+    try:
+        uid = str(request.user)
+        user = Users.objects.get(pk=uid)
+    except(Users.DoesNotExist):
+        user = None
 
-    return Response({'success': True,
-                     'message': 'Successfully logged in',
-                     'user': serializer},
-                    status=status.HTTP_200_OK)
+    if user is not None:
+        serializer = UserSerializer(user).data
+        return Response({'success': True,
+                         'user': serializer},
+                        status=status.HTTP_200_OK)
+    else:
+        return Response({'message': 'Invalid User!'},
+                        status=status.HTTP_400_BAD_REQUEST)
