@@ -7,7 +7,7 @@ def module_image_directory_path(instance, filename):
     # file will be uploaded to MEDIA_ROOT/module_image/module_<id>/<filename>
     somelist = filename.split('.')  # spliting orignal file name into somelist
     extension = (somelist[-1])   # Getting last element of the list
-    filename = str(instance.id) + '_' + \
+    filename = str(instance.name) + '_' + \
         str(datetime.now()) + '.' + extension  # Re-writing file name
     return 'module_image/module_{0}/{1}'.format(instance.name, filename)
 

@@ -22,7 +22,7 @@ from .serializer import (ModuleSerializer)
 
 # Api Category List
 class ModuleList(ListAPIView):
-    permission_classes = (IsAuthenticated)
+    permission_classes = (IsAuthenticated,)
     authentication_class = (JSONWebTokenAuthentication,)
     queryset = Modules.objects.all()
     serializer_class = ModuleSerializer
