@@ -22,6 +22,7 @@ urlpatterns = [
     path('api/', include([
         path('', include('users.urls')),
         path('', include('modules.urls')),
+        path('', include('apps.urls')),
         # path('', include('profiles.urls')),
         # path('', include('apis.urls')),
         # path('', include('plans.urls')),

@@ -17,7 +17,7 @@ from .models import (Modules)
 from .serializer import (ModuleSerializer)
 
 
-# Api Category List
+# Module's List
 class ModuleList(ListAPIView):
     permission_classes = (IsAuthenticated,)
     authentication_class = (JSONWebTokenAuthentication,)
@@ -25,6 +25,7 @@ class ModuleList(ListAPIView):
     serializer_class = ModuleSerializer
 
 
+# Module's Details
 class ModuleDetails(RetrieveAPIView):
     permission_classes = (IsAuthenticated,)
     authentication_class = (JSONWebTokenAuthentication,)
