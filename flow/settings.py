@@ -138,6 +138,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 STATIC_URL = '/static/'
 
 AUTH_USER_MODEL = 'users.Users'
@@ -207,7 +208,12 @@ EMAIL_HOST_USER = '7a18bdfa0c4485'
 EMAIL_HOST_PASSWORD = '3b2191c8573578'
 EMAIL_PORT = '2525'
 
+
 SITE_ID = 1
+
+# Media Files setup
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_URL = 'media/'
 
 
 AUTHENTICATION_BACKENDS = (
