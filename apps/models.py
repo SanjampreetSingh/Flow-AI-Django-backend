@@ -7,13 +7,15 @@ from users.models import (Users)
 class Apps(models.Model):
     user = models.ForeignKey(Users, on_delete=models.CASCADE)
     name = models.CharField("Name", "name", max_length=255)
-    active = models.BooleanField("Is Active", "active", default=True)
+    description = models.TextField(
+        "Description", "description", null=True, blank=True)
     apikey_value = models.CharField(
         "Apikey Value", "apikey_value", max_length=100, null=True, blank=True)
     apikey_id = models.CharField(
         "Apikey ID", "apikey_id", max_length=100, null=True, blank=True)
     usage_plan_id = models.CharField(
         "Usage Plan ID", "usage_plan_id", max_length=100, null=True, blank=True)
+    active = models.BooleanField("Is Active", "active", default=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now_add=True)
 
