@@ -9,7 +9,7 @@ def module_image_directory_path(instance, filename):
     extension = (somelist[-1])   # Getting last element of the list
     filename = str(instance.id) + '_' + \
         str(datetime.now()) + '.' + extension  # Re-writing file name
-    return 'module_image/module_{0}/{1}'.format(instance.category.name, filename)
+    return 'module_image/module_{0}/{1}'.format(instance.name, filename)
 
 
 # Create your models here.
