@@ -24,6 +24,50 @@ class AppViewSet(viewsets.ModelViewSet):
     authentication_classes = [JSONWebTokenAuthentication]
 
 
+# def applicationCreateAPI(request):
+#     if request.method == 'POST':
+#         query = UserSubscription.objects.get(user=request.user.id)
+#         serializer = UserAppSerializer(data=request.data)
+#         if serializer.is_valid():
+#             serializer.validated_data['user'] = request.user
+#             app = serializer.save()
+#             api_create_api_key = client.create_api_key(
+#                 name=request.data.get('name'),
+#                 enabled=True,
+#                 generateDistinctId=True,
+#                 customerId=str(app.id)
+#             )
+#             api_create_usage_plan = client.create_usage_plan(
+#                 name=request.data.get('name'),
+#                 throttle={
+#                     'burstLimit': query.plan.burst_limit,
+#                     'rateLimit': query.plan.rate_limit
+#                 },
+#                 quota={
+#                     'limit': query.plan.quota_limit,
+#                     'period': 'MONTH'
+#                 },
+#             )
+#             api_create_usage_plan_key = client.create_usage_plan_key(
+#                 usagePlanId=api_create_usage_plan.get('id'),
+#                 keyId=api_create_api_key.get('id'),
+#                 keyType='API_KEY'
+#             )
+#             UserApp.objects.filter(id=app.id).update(apikey_value=api_create_api_key.get('value'),
+#                                                      apikey_id=api_create_api_key.get(
+#                                                      'id'),
+#                                                      usage_plan_id=api_create_usage_plan.get('id'))
+#             return Response({'success': True,
+#                              'message': 'Data Added',
+#                              'data': serializer.data,
+#                              'api_create_api_key': api_create_api_key,
+#                              'api_create_usage_plan': api_create_usage_plan,
+#                              'api_create_usage_plan_key': api_create_usage_plan_key},
+#                             status=status.HTTP_201_CREATED)
+
+#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
 class AppImageViewSet(viewsets.ModelViewSet):
     queryset = AppImage.objects.all()
     serializer_class = AppImageSerializer
