@@ -46,7 +46,7 @@ INSTALLED_APPS = [
     'rest_framework_social_oauth2',
     'users',
     'modules',
-    'apps',
+    'readyApps',
     # 'profiles',
     # 'apis',
     # 'plans',
