@@ -24,6 +24,7 @@ class ReadyApis(models.Model):
     recommendations = models.SmallIntegerField(
         "Recommendations", "recommendations", default=0)
     price = models.FloatField("Price", "price", default=0.00)
+    tagline = models.CharField("Tagline", "tagline", max_length=255)
     description = models.TextField(
         "Description", "description", null=True, blank=True)
     use_cases = models.TextField(
