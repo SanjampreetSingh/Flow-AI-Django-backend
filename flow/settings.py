@@ -47,8 +47,8 @@ INSTALLED_APPS = [
     'users',
     'modules',
     'readyApps',
+    'readyApis',
     # 'profiles',
-    # 'apis',
     # 'plans',
 ]
 
