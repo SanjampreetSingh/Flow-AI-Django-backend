@@ -61,6 +61,8 @@ class ReadyApiMedia(models.Model):
     category = models.ForeignKey(ReadyApiCategory, on_delete=models.CASCADE)
     media = models.FileField("Media", "media", upload_to=media_directory_path,
                              max_length=255, null=True, blank=True)
+    url = models.CharField(
+        "URL", "url", max_length=2083, blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now_add=True)
 
