@@ -14,11 +14,11 @@ urlpatterns = [
                 views.ReadyApiRetrieve.as_view(), name="ready_api_retrieve"),
 
         # Ready Api's Media List
-        path('api/media/', views.ReadyApiMediaList.as_view(),
+        path('api-media/', views.ReadyApiMediaList.as_view(),
              name="ready_api_image_list"),
 
         # Ready Api Category List
-        path('api/category/', views.ReadyApiCategoryList.as_view(),
+        path('api-category/', views.ReadyApiCategoryList.as_view(),
              name='ready_api_category_list'),
     ])),
 
