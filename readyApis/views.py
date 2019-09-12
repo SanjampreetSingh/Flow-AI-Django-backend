@@ -21,7 +21,7 @@ from .serializer import (
 
 # Ready Api's List
 class ReadyApiList(ListAPIView):
-    permission_classes = (IsAuthenticated)
+    permission_classes = (IsAuthenticated,)
     authentication_class = (JSONWebTokenAuthentication,)
     queryset = ReadyApis.objects.all()
     serializer_class = ReadyApiSerializer
@@ -37,7 +37,7 @@ class ReadyApiList(ListAPIView):
 
 # Ready Api's Retrieve
 class ReadyApiRetrieve(RetrieveAPIView):
-    permission_classes = (IsAuthenticated)
+    permission_classes = (IsAuthenticated,)
     authentication_class = (JSONWebTokenAuthentication,)
     queryset = ReadyApis.objects.all()
     serializer_class = ReadyApiSerializer
@@ -45,7 +45,7 @@ class ReadyApiRetrieve(RetrieveAPIView):
 
 # Ready Api's Media List
 class ReadyApiMediaList(ListAPIView):
-    permission_classes = (IsAuthenticated)
+    permission_classes = (IsAuthenticated,)
     authentication_class = (JSONWebTokenAuthentication,)
     queryset = ReadyApiMedia.objects.all()
     serializer_class = ReadyApiMediaSerializer
@@ -61,7 +61,7 @@ class ReadyApiMediaList(ListAPIView):
 
 # Ready Api Category List
 class ReadyApiCategoryList(ListAPIView):
-    permission_classes = (IsAuthenticated)
+    permission_classes = (IsAuthenticated,)
     authentication_class = (JSONWebTokenAuthentication,)
     queryset = ReadyApiCategory.objects.all()
     serializer_class = ReadyApiCategorySerializer
