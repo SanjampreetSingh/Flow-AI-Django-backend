@@ -228,6 +228,8 @@ SOCIAL_AUTH_GITHUB_KEY = 'e25d91836a3e77079400'
 SOCIAL_AUTH_GITHUB_SECRET = '13f62427c4ab0d9fb169033c50e1a83b3b92d529'
 SOCIAL_AUTH_GITHUB_SCOPE = ['email']
 
+# LOGIN_REDIRECT_URL = 'localhost'
+
 SOCIAL_AUTH_PIPELINE = (
     'social_core.pipeline.social_auth.social_details',
     'social_core.pipeline.social_auth.social_uid',
