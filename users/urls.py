@@ -18,4 +18,6 @@ urlpatterns = [
     path('verify/', verify_jwt_token),
 
     path('get/user/', views.get_user, name='get_user'),
+
+    path('oauth/login/', views.SocialLoginView.as_view())
 ]

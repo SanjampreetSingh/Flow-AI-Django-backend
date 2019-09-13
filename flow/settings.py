@@ -218,6 +218,7 @@ MEDIA_URL = 'media/'
 
 AUTHENTICATION_BACKENDS = (
     'social_core.backends.github.GithubOAuth2',
+    'social_core.backends.gitlab.GitLabOAuth2',
     'rest_framework_social_oauth2.backends.DjangoOAuth2',
     'django.contrib.auth.backends.ModelBackend',
 )
@@ -228,12 +229,13 @@ SOCIAL_AUTH_GITHUB_KEY = 'e25d91836a3e77079400'
 SOCIAL_AUTH_GITHUB_SECRET = 'c033f10268125ab62046b0cf8aface986ac64984'
 SOCIAL_AUTH_GITHUB_SCOPE = ['email']
 
-SOCIAL_AUTH_GITLAB_SCOPE = ['api']
 
+SOCIAL_AUTH_GITLAB_SCOPE = ['api', 'email']
 SOCIAL_AUTH_GITLAB_KEY = '54093ed8852de5f5e872664b0149088c8d180f21bb6877d6a35ae1d131e6ecd2'
 SOCIAL_AUTH_GITLAB_SECRET = '3e53d6f8edd86f4658f555d9ee3d04b467b94a36873125ca857f42b146573686'
 
-# LOGIN_REDIRECT_URL = 'localhost'
+SOCIAL_AUTH_LOGIN_REDIRECT_URL = '/'
+SOCIAL_AUTH_USERNAME_IS_FULL_EMAIL = True
 
 SOCIAL_AUTH_PIPELINE = (
     'social_core.pipeline.social_auth.social_details',
