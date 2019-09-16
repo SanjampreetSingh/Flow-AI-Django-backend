@@ -3,7 +3,7 @@ from requests.exceptions import HTTPError
 
 # Django
 from django.contrib.sites.shortcuts import get_current_site
-from django.contrib.auth import get_user_model
+from django.contrib.auth import get_user_model, views
 from django.core.mail import EmailMessage
 from django.http import HttpResponse, Http404, JsonResponse
 from django.template.loader import render_to_string
@@ -11,7 +11,7 @@ from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes, force_text
 
 # Django Rest Framework Files
-from rest_framework import viewsets, status, generics
+from rest_framework import generics, permissions, status, viewsets
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes, authentication_classes
@@ -22,9 +22,9 @@ from rest_framework_jwt.views import ObtainJSONWebToken
 from rest_framework_jwt.settings import api_settings
 
 # Social Login
+from social_django.utils import load_strategy, load_backend
 from social_core.backends.oauth import BaseOAuth2
 from social_core.exceptions import MissingBackend, AuthTokenError, AuthForbidden
-from social_django.utils import load_strategy, load_backend
 
 # Local
 from .models import (Users)
@@ -173,6 +173,7 @@ def get_user(request):
 
 
 class SocialLoginView(generics.GenericAPIView):
+    """Log in using social oAuth"""
     serializer_class = SocialSerializer
     permission_classes = [AllowAny]
 
@@ -184,12 +185,11 @@ class SocialLoginView(generics.GenericAPIView):
         strategy = load_strategy(request)
 
         try:
-            backend = load_backend(strategy=strategy, name=provider,
-                                   redirect_uri=None)
+            backend = load_backend(
+                strategy=strategy, name=provider, redirect_uri=None)
 
         except MissingBackend:
-            return Response({'error': 'Please provide a valid provider'},
-                            status=status.HTTP_400_BAD_REQUEST)
+            return Response({'error': 'Please provide a valid provider'}, status=status.HTTP_400_BAD_REQUEST)
         try:
             if isinstance(backend, BaseOAuth2):
                 access_token = serializer.data.get('access_token')
@@ -208,7 +208,7 @@ class SocialLoginView(generics.GenericAPIView):
             }, status=status.HTTP_400_BAD_REQUEST)
 
         try:
-            authenticated_user = backend.do_auth(access_token, user=user)
+            user = backend.do_auth(access_token, user=user)
 
         except HTTPError as error:
             return Response({
@@ -222,17 +222,13 @@ class SocialLoginView(generics.GenericAPIView):
                 "details": str(error)
             }, status=status.HTTP_400_BAD_REQUEST)
 
-        if authenticated_user and authenticated_user.is_active:
+        if user and user.is_active:
             # generate JWT token
-            login(request, authenticated_user)
             data = {
                 "token": jwt_encode_handler(
                     jwt_payload_handler(user)
                 )}
-            # customize the response to your needs
-            response = {
-                "email": authenticated_user.email,
-                "username": authenticated_user.username,
-                "token": data.get('token')
-            }
-            return Response(status=status.HTTP_200_OK, data=response)
+            return Response({
+                "email": user.email,
+                "token": data.get('token')},
+                status=status.HTTP_200_OK)
