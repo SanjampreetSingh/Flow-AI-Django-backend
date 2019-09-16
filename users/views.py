@@ -3,7 +3,7 @@ from requests.exceptions import HTTPError
 
 # Django
 from django.contrib.sites.shortcuts import get_current_site
-from django.contrib.auth import get_user_model, views
+from django.contrib.auth import get_user_model
 from django.core.mail import EmailMessage
 from django.http import HttpResponse, Http404, JsonResponse
 from django.template.loader import render_to_string
@@ -147,7 +147,6 @@ class LoginAPI(ObtainJSONWebToken):
             token = jwt_encode_handler(payload)
 
         return Response({'success': True,
-                         'message': 'Successfully logged in',
                          'token': token},
                         status=status.HTTP_200_OK)
 
@@ -228,7 +227,6 @@ class SocialLoginView(generics.GenericAPIView):
                 "token": jwt_encode_handler(
                     jwt_payload_handler(user)
                 )}
-            return Response({
-                "email": user.email,
-                "token": data.get('token')},
-                status=status.HTTP_200_OK)
+            return Response({'success': True,
+                             'token': data.get('token')},
+                            status=status.HTTP_200_OK)
