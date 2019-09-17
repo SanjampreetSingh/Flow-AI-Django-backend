@@ -251,3 +251,8 @@ SOCIAL_AUTH_PIPELINE = (
     'social_core.pipeline.social_auth.load_extra_data',
     'social_core.pipeline.user.user_details',
 )
+
+
+# AWS Boto
+AWS_ACCESS_KEY_ID = 'AKIAREF53VZTVNZ6HKWF'
+AWS_SECRET_ACCESS_KEY = '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'
