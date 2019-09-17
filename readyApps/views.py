@@ -19,7 +19,7 @@ from .serializer import (ReadyAppSerializer, ReadyAppImageSerializer)
 
 
 # Boto3 Connection Variable
-client = boto3.client('apigateway', region_name='us-east-1', aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
+client = boto3.client('apigateway', region_name='us-east-2', aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
                       aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY)
 
 
