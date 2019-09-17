@@ -61,8 +61,8 @@ class ReadyAppViewSet(viewsets.ModelViewSet):
                     keyId=api_create_api_key.get('id'),
                     keyType='API_KEY'
                 )
-                UserApp.objects.filter(id=app.id).update(apikey_value=api_create_api_key.get('value'),
-                                                         apikey_id=api_create_api_key.get(
+                ReadyApps.objects.filter(id=app.id).update(apikey_value=api_create_api_key.get('value'),
+                                                           apikey_id=api_create_api_key.get(
                     'id'),
                     usage_plan_id=api_create_usage_plan.get('id'))
                 return Response({'success': True,
