@@ -32,7 +32,7 @@ class ReadyAppViewSet(viewsets.ModelViewSet):
     def create(self, request):
         if request.method == 'POST':
             # query = UserSubscription.objects.get(user=request.user.id)
-            serializer = UserAppSerializer(data=request.data)
+            serializer = ReadyAppSerializer(data=request.data)
             if serializer.is_valid():
                 serializer.validated_data['user'] = request.user
                 app = serializer.save()
