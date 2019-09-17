@@ -19,8 +19,12 @@ from .serializer import (ReadyAppSerializer, ReadyAppImageSerializer)
 
 
 # Boto3 Connection Variable
-client = boto3.client('apigateway', region_name='us-east-2', aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
-                      aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY)
+client = boto3.client(
+    'apigateway',
+    region_name='us-east-2',
+    aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
+    aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY
+)
 
 
 class ReadyAppViewSet(viewsets.ModelViewSet):
@@ -36,12 +40,9 @@ class ReadyAppViewSet(viewsets.ModelViewSet):
             if serializer.is_valid():
                 serializer.validated_data['user'] = request.user
                 app = serializer.save()
-                api_create_api_key = client.create_api_key(
-                    name=request.data.get('name'),
-                    enabled=True,
-                    generateDistinctId=True,
-                    customerId=str(app.id)
-                )
+
+                boto_create_api_key = boto_create_api_key(
+                    request.data.get('name'), True, True, str(app.id))
                 # query.plan.burst_limit,
                 # query.plan.rate_limit
                 # query.plan.quota_limit,
@@ -58,22 +59,37 @@ class ReadyAppViewSet(viewsets.ModelViewSet):
                 )
                 api_create_usage_plan_key = client.create_usage_plan_key(
                     usagePlanId=api_create_usage_plan.get('id'),
-                    keyId=api_create_api_key.get('id'),
+                    keyId=boto_create_api_key.get('id'),
                     keyType='API_KEY'
                 )
-                ReadyApps.objects.filter(id=app.id).update(apikey_value=api_create_api_key.get('value'),
-                                                           apikey_id=api_create_api_key.get(
-                    'id'),
-                    usage_plan_id=api_create_usage_plan.get('id'))
-                return Response({'success': True,
-                                 'message': 'Data Added',
-                                 'data': serializer.data,
-                                 'api_create_api_key': api_create_api_key,
-                                 'api_create_usage_plan': api_create_usage_plan,
-                                 'api_create_usage_plan_key': api_create_usage_plan_key},
-                                status=status.HTTP_201_CREATED)
+                ReadyApps.objects.filter(id=app.id)\
+                    .update(
+                    apikey_value=boto_create_api_key.get('value'),
+                    apikey_id=boto_create_api_key.get('id'),
+                    usage_plan_id=api_create_usage_plan.get('id')
+                )
+                return Response(
+                    {
+                        'success': True,
+                        'message': 'Data Added',
+                        'data': serializer.data,
+                        'api_create_api_key': boto_create_api_key,
+                        'api_create_usage_plan': api_create_usage_plan,
+                        'api_create_usage_plan_key': api_create_usage_plan_key
+                    },
+                    status=status.HTTP_201_CREATED
+                )
+            else:
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+def boto_create_api_key(name: str, enabled: bool, generateDistinctId: bool, customerId: str):
+    return client.create_api_key(
+        name=name,
+        enabled=enabled,
+        generateDistinctId=generateDistinctId,
+        customerId=customerId
+    )
 
 
 class ReadyAppImageViewSet(viewsets.ModelViewSet):
