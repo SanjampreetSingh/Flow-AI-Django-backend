@@ -141,6 +141,7 @@ def boto_create_usage_plan_key(usagePlanId, keyId, keyType: str):
     )
 
 
+# some comment
 class ReadyAppImageViewSet(viewsets.ModelViewSet):
     queryset = ReadyAppImage.objects.all()
     serializer_class = ReadyAppImageSerializer
