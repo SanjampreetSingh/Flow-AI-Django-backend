@@ -33,6 +33,16 @@ class ReadyAppViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
     authentication_classes = [JSONWebTokenAuthentication]
 
+    def list(self, request):
+        if request.method == 'GET':
+            try:
+                applications = ReadyApps.objects.filter(user=request.user.id)
+            except ReadyApps.DoesNotExist:
+                return Response(status=status.HTTP_404_NOT_FOUND)
+
+            serializer = ReadyAppSerializer(applications, many=True)
+            return Response(serializer.data)
+
     def create(self, request):
         if request.method == 'POST':
             # query = UserSubscription.objects.get(user=request.user.id)
