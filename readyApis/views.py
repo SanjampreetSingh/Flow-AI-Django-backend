@@ -42,7 +42,7 @@ class ReadyApiList(ListAPIView):
                 'success': True,
                 'message': 'Ready api list.',
                 'data': {
-                    'ready-apis': serializer.data
+                    'readyApis': serializer.data
                 }
             },
             status=status.HTTP_200_OK)
@@ -79,7 +79,7 @@ class ReadyApiMediaList(ListAPIView):
                 'success': True,
                 'message': 'Ready api media list.',
                 'data': {
-                    'ready-apis': serializer.data
+                    'readyApisMedia': serializer.data
                 }
             },
             status=status.HTTP_200_OK)
@@ -100,7 +100,7 @@ class ReadyApiCategoryList(ListAPIView):
                 'success': True,
                 'message': 'Ready api media list.',
                 'data': {
-                    'ready-apis': serializer.data
+                    'readyApisCategory': serializer.data
                 }
             },
             status=status.HTTP_200_OK)
