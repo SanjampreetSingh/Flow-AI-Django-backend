@@ -76,28 +76,32 @@ def register(request):
                 return Response(
                     {
                         'success': True,
-                        'message': 'User Registered Successfully',
+                        'message': 'User registered successfully.',
                     },
                     status=status.HTTP_201_CREATED)
             else:
                 return Response(
                     {
                         'success': False,
-                        'message': str(serializer.errors)
+                        'message': 'Invalid data.',
+                        'error':
+                        {
+                            'details': str(serializer.errors)
+                        }
                     },
                     status=status.HTTP_400_BAD_REQUEST)
         else:
             return Response(
                 {
                     'success': False,
-                    'message': 'User already exists'
+                    'message': 'User already exists.'
                 },
                 status=status.HTTP_400_BAD_REQUEST)
     else:
         return Response(
             {
                 'success': False,
-                'message': 'Bad Request'
+                'message': 'Bad Request.'
             },
             status=status.HTTP_400_BAD_REQUEST)
 
@@ -149,7 +153,7 @@ class LoginAPI(ObtainJSONWebToken):
                 return Response(
                     {
                         'success': False,
-                        'message': 'Missing or incorrect credentials',
+                        'message': 'Missing or incorrect credentials.',
                     },
                     status=status.HTTP_400_BAD_REQUEST)
 
@@ -159,7 +163,7 @@ class LoginAPI(ObtainJSONWebToken):
                 return Response(
                     {
                         'success': False,
-                        'message': 'User not found',
+                        'message': 'User not found.',
                     },
                     status=status.HTTP_404_NOT_FOUND)
 
@@ -167,18 +171,21 @@ class LoginAPI(ObtainJSONWebToken):
                 return Response(
                     {
                         'success': False,
-                        'message': 'Incorrect password',
+                        'message': 'Incorrect password.',
                     },
                     status=status.HTTP_403_FORBIDDEN)
 
             user = UserSerializer(user).data
-            payload = jwt_payload_handler(user)
-            token = jwt_encode_handler(payload)
+            token = jwt_encode_handler(jwt_payload_handler(user))
 
         return Response(
             {
                 'success': True,
-                'message': 'User authenticated'
+                'message': 'User authenticated.',
+                'data':
+                {
+                    'token': token
+                }
             },
             status=status.HTTP_200_OK)
 
@@ -198,14 +205,18 @@ def get_user(request):
         return Response(
             {
                 'success': True,
-                'user': serializer
+                'message': 'User data.',
+                'data':
+                {
+                    'user': serializer
+                }
             },
             status=status.HTTP_200_OK)
     else:
         return Response(
             {
                 'success': False,
-                'message': 'Invalid user'
+                'message': 'Invalid user.'
             },
             status=status.HTTP_400_BAD_REQUEST)
 
@@ -230,7 +241,7 @@ class SocialLoginView(generics.GenericAPIView):
             return Response(
                 {
                     'success': False,
-                    'message': 'Please provide a valid provider'
+                    'message': 'Please provide a valid provider.'
                 },
                 status=status.HTTP_400_BAD_REQUEST)
         try:
@@ -242,8 +253,11 @@ class SocialLoginView(generics.GenericAPIView):
             return Response(
                 {
                     'success': False,
-                    'message': 'Invalid token',
-                    'details': str(error)
+                    'message': 'Invalid token.',
+                    'error':
+                    {
+                        'details': str(error)
+                    }
                 },
                 status=status.HTTP_400_BAD_REQUEST)
 
@@ -251,8 +265,11 @@ class SocialLoginView(generics.GenericAPIView):
             return Response(
                 {
                     'success': False,
-                    'message': 'Invalid credentials',
-                    'details': str(error)
+                    'message': 'Invalid credentials.',
+                    'error':
+                    {
+                        'details': str(error)
+                    }
                 },
                 status=status.HTTP_400_BAD_REQUEST)
 
@@ -263,8 +280,11 @@ class SocialLoginView(generics.GenericAPIView):
             return Response(
                 {
                     'success': False,
-                    'message': 'Invalid token',
-                    'details': str(error)
+                    'message': 'Invalid token.',
+                    'error':
+                    {
+                        'details': str(error)
+                    }
                 },
                 status=status.HTTP_400_BAD_REQUEST)
 
@@ -272,20 +292,25 @@ class SocialLoginView(generics.GenericAPIView):
             return Response(
                 {
                     'success': False,
-                    'message': 'Invalid token',
-                    'details': str(error)
+                    'message': 'Invalid token.',
+                    'error':
+                    {
+                        'details': str(error)
+                    }
                 },
                 status=status.HTTP_400_BAD_REQUEST)
 
         if user and user.is_active:
             # generate JWT token
-            data = {
-                'token': jwt_encode_handler(
-                    jwt_payload_handler(user)
-                )}
+            token = jwt_encode_handler(jwt_payload_handler(user))
+
             return Response(
                 {
                     'success': True,
-                    'message': 'User authenticated'
+                    'message': 'User authenticated.',
+                    'data':
+                    {
+                        'token': token
+                    }
                 },
                 status=status.HTTP_200_OK)

@@ -38,10 +38,31 @@ class ReadyAppViewSet(viewsets.ModelViewSet):
             try:
                 applications = ReadyApps.objects.filter(user=request.user.id)
             except ReadyApps.DoesNotExist:
-                return Response(status=status.HTTP_404_NOT_FOUND)
+                return Response(
+                    {
+                        'success': False,
+                        'message': 'Application not found.',
+                    },
+                    status=status.HTTP_404_NOT_FOUND)
 
             serializer = ReadyAppSerializer(applications, many=True)
-            return Response(serializer.data)
+            return Response(
+                {
+                    'success': True,
+                    'message': 'Application data.',
+                    'data':
+                    {
+                        'application': serializer.data
+                    }
+                },
+                status=status.HTTP_200_OK)
+        else:
+            return Response(
+                {
+                    'success': False,
+                    'message': 'Bad Request.'
+                },
+                status=status.HTTP_400_BAD_REQUEST)
 
     def create(self, request):
         if request.method == 'POST':
@@ -71,7 +92,7 @@ class ReadyAppViewSet(viewsets.ModelViewSet):
                 return Response(
                     {
                         'success': True,
-                        'message': 'App created successfully!',
+                        'message': 'App created successfully.',
                     },
                     status=status.HTTP_201_CREATED
                 )
@@ -80,7 +101,11 @@ class ReadyAppViewSet(viewsets.ModelViewSet):
                 return Response(
                     {
                         'success': False,
-                        'message': str(serializer.errors)
+                        'message': 'Invalid data.',
+                        'error':
+                        {
+                            'details': str(serializer.errors)
+                        }
                     },
                     status=status.HTTP_400_BAD_REQUEST)
 
