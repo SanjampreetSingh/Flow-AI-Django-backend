@@ -20,6 +20,11 @@ urlpatterns = [
         # Ready Api Category List
         path('api-category/', views.ReadyApiCategoryList.as_view(),
              name='ready_api_category_list'),
+
+        # Ready Api Demo
+        path('api/demo', views.readyApiDemo,
+             name='ready_api_category_list'),
+
     ])),
 
 ]

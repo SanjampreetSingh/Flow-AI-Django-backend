@@ -106,7 +106,7 @@ class ReadyAppViewSet(viewsets.ModelViewSet):
                         'message': 'Invalid data.',
                         'error':
                         {
-                            'details': str(serializer.errors)
+                            'details': serializer.errors
                         }
                     },
                     status=status.HTTP_400_BAD_REQUEST)
