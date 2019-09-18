@@ -34,6 +34,19 @@ class ReadyApiList(ListAPIView):
             queryset = ReadyApis.objects.all()
         return queryset
 
+    def list(self, request):
+        queryset = self.get_queryset()
+        serializer = ReadyApiSerializer(queryset, many=True)
+        return Response(
+            {
+                'success': True,
+                'message': 'Ready api list.',
+                'data': {
+                    'ready-apis': serializer.data
+                }
+            },
+            status=status.HTTP_200_OK)
+
 
 # Ready Api's Retrieve
 class ReadyApiRetrieve(RetrieveAPIView):
@@ -58,6 +71,19 @@ class ReadyApiMediaList(ListAPIView):
             queryset = ReadyApiMedia.objects.all()
         return queryset
 
+    def list(self, request):
+        queryset = self.get_queryset()
+        serializer = ReadyApiMediaSerializer(queryset, many=True)
+        return Response(
+            {
+                'success': True,
+                'message': 'Ready api media list.',
+                'data': {
+                    'ready-apis': serializer.data
+                }
+            },
+            status=status.HTTP_200_OK)
+
 
 # Ready Api Category List
 class ReadyApiCategoryList(ListAPIView):
@@ -65,3 +91,16 @@ class ReadyApiCategoryList(ListAPIView):
     authentication_class = (JSONWebTokenAuthentication,)
     queryset = ReadyApiCategory.objects.all()
     serializer_class = ReadyApiCategorySerializer
+
+    def list(self, request):
+        queryset = self.get_queryset()
+        serializer = ReadyApiCategorySerializer(queryset, many=True)
+        return Response(
+            {
+                'success': True,
+                'message': 'Ready api media list.',
+                'data': {
+                    'ready-apis': serializer.data
+                }
+            },
+            status=status.HTTP_200_OK)
