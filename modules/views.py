@@ -30,4 +30,5 @@ class ModuleDetails(RetrieveAPIView):
     permission_classes = (IsAuthenticated,)
     authentication_class = (JSONWebTokenAuthentication,)
     queryset = Modules.objects.all()
+    lookup_field = 'reference_url'
     serializer_class = ModuleSerializer
