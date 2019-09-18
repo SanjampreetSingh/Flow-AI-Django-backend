@@ -1,3 +1,4 @@
 .vscode/settings.json
 # catche files
 *.cpython-37.pyc
+seed.json
