@@ -1,4 +1,5 @@
 import boto3
+import pprint
 # Django
 from django.conf import settings
 from django.contrib.sites.shortcuts import get_current_site
@@ -14,6 +15,7 @@ from rest_framework_jwt.authentication import JSONWebTokenAuthentication
 
 # Local
 from users.models import (Users)
+from readyApis.models import (ReadyApis)
 from .models import (ReadyApps, ReadyAppImage)
 from .serializer import (ReadyAppSerializer, ReadyAppImageSerializer)
 
@@ -141,9 +143,90 @@ def boto_create_usage_plan_key(usagePlanId, keyId, keyType: str):
     )
 
 
-# some comment
 class ReadyAppImageViewSet(viewsets.ModelViewSet):
     queryset = ReadyAppImage.objects.all()
     serializer_class = ReadyAppImageSerializer
     permission_classes = [IsAuthenticated]
     authentication_classes = [JSONWebTokenAuthentication]
+
+
+# Activate Api Usage Plan
+@api_view(['POST'])
+@authentication_classes((JSONWebTokenAuthentication,))
+@permission_classes((IsAuthenticated,))
+def activateApiUsagePlan(request):
+    if request.method == 'POST':
+
+        app = ReadyApps.objects.filter(
+            id=request.data.get('app_id')).values('usage_plan_id')
+
+        api = ReadyApis.objects.filter(
+            id=request.data.get('api_id')).values('apikey_stage')
+
+        pprint((api[0].get('apikey_stage')))
+
+        boto_update_usage_plan = client.update_usage_plan(
+            usagePlanId=app[0].get('usage_plan_id'),
+            patchOperations=[
+                {
+                    "op": "add",
+                    "path": "/apiStages",
+                    "value": api[0].get('apikey_stage')
+                },
+            ]
+        )
+
+        return Response(
+            {
+                'success': True,
+                'message': 'Api added to app.'
+            },
+            status=status.HTTP_200_OK)
+    else:
+        return Response(
+            {
+                'success': False,
+                'message': 'Bad Request.'
+            },
+            status=status.HTTP_400_BAD_REQUEST)
+
+
+# Deactivate Api Usage Plan
+@api_view(['POST'])
+@authentication_classes((JSONWebTokenAuthentication,))
+@permission_classes((IsAuthenticated, IsAdmin | IsIndividual | IsCompany, HasCompleteProfile, HasVerifiedEmail))
+def deactivateApiUsagePlan(request):
+    if request.method == 'POST':
+
+        app = ReadyApps.objects.filter(
+            id=request.data.get('app_id')).values('usage_plan_id')
+
+        api = ReadyApis.objects.filter(
+            id=request.data.get('api_id')).values('apikey_stage')
+
+        pprint((api[0].get('apikey_stage')))
+
+        boto_update_usage_plan = client.update_usage_plan(
+            usagePlanId=app[0].get('usage_plan_id'),
+            patchOperations=[
+                {
+                    "op": "remove",
+                    "path": "/apiStages",
+                    "value": api[0].get('apikey_stage')
+                },
+            ]
+        )
+
+        return Response(
+            {
+                'success': True,
+                'message': 'Api removed from app.'
+            },
+            status=status.HTTP_200_OK)
+    else:
+        return Response(
+            {
+                'success': False,
+                'message': 'Bad Request.'
+            },
+            status=status.HTTP_400_BAD_REQUEST)
