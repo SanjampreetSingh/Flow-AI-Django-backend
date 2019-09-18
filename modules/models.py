@@ -21,7 +21,7 @@ class Modules(models.Model):
     image = models.ImageField("Module Image", "image", upload_to=module_image_directory_path,
                               max_length=255, null=True, blank=True)
     active = models.BooleanField("Is Active", "active", default=True)
-    reference_url = models.CharField(max_length=255, unique=True)
+    reference_url = models.SlugField(unique=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now_add=True)
 

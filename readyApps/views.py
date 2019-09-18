@@ -43,39 +43,25 @@ class ReadyAppViewSet(viewsets.ModelViewSet):
 
                 boto_create_api_key = boto_create_api_key(
                     request.data.get('name'), True, True, str(app.id))
-                # query.plan.burst_limit,
-                # query.plan.rate_limit
-                # query.plan.quota_limit,
-                api_create_usage_plan = client.create_usage_plan(
-                    name=request.data.get('name'),
-                    throttle={
-                        'burstLimit': 10,
-                        'rateLimit': 10
-                    },
-                    quota={
-                        'limit': 100,
-                        'period': 'MONTH'
-                    },
-                )
-                api_create_usage_plan_key = client.create_usage_plan_key(
-                    usagePlanId=api_create_usage_plan.get('id'),
-                    keyId=boto_create_api_key.get('id'),
-                    keyType='API_KEY'
-                )
+
+                # query.plan.burst_limit, query.plan.rate_limit, query.plan.quota_limit,
+
+                boto_create_usage_plan = boto_create_usage_plan(
+                    request.data.get('name'))
+
+                boto_api_create_usage_plan_key = boto_create_usage_plan_key(
+                    boto_create_usage_plan.get('id'), boto_create_api_key.get('id'), 'API_KEY')
+
                 ReadyApps.objects.filter(id=app.id)\
                     .update(
                     apikey_value=boto_create_api_key.get('value'),
                     apikey_id=boto_create_api_key.get('id'),
-                    usage_plan_id=api_create_usage_plan.get('id')
+                    usage_plan_id=boto_create_usage_plan.get('id')
                 )
                 return Response(
                     {
                         'success': True,
                         'message': 'Data Added',
-                        'data': serializer.data,
-                        'api_create_api_key': boto_create_api_key,
-                        'api_create_usage_plan': api_create_usage_plan,
-                        'api_create_usage_plan_key': api_create_usage_plan_key
                     },
                     status=status.HTTP_201_CREATED
                 )
@@ -89,6 +75,28 @@ def boto_create_api_key(name: str, enabled: bool, generateDistinctId: bool, cust
         enabled=enabled,
         generateDistinctId=generateDistinctId,
         customerId=customerId
+    )
+
+
+def boto_create_usage_plan(name: str):
+    return client.create_usage_plan(
+        name=name,
+        throttle={
+            'burstLimit': 10,
+            'rateLimit': 10
+        },
+        quota={
+            'limit': 100,
+            'period': 'MONTH'
+        },
+    )
+
+
+def boto_create_usage_plan_key(usagePlanId, keyId, keyType: str):
+    return client.create_usage_plan_key(
+        usagePlanId=usagePlanId,
+        keyId=keyId,
+        keyType=keyType
     )
 
 
