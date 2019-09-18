@@ -73,20 +73,37 @@ def register(request):
                 )
                 email.send()
 
-                return Response({'success': True,
-                                 'message': 'User Registered Successfully',
-                                 'data': serializer.data},
-                                status=status.HTTP_201_CREATED)
+                return Response(
+                    {
+                        'success': True,
+                        'message': 'User Registered Successfully',
+                    },
+                    status=status.HTTP_201_CREATED)
             else:
-                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+                return Response(
+                    {
+                        'success': False,
+                        'message': str(serializer.errors)
+                    },
+                    status=status.HTTP_400_BAD_REQUEST)
         else:
-            return Response('User already exists', status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {
+                    'success': False,
+                    'message': 'User already exists'
+                },
+                status=status.HTTP_400_BAD_REQUEST)
     else:
-        return Response('Bad Request', status=status.HTTP_400_BAD_REQUEST)
+        return Response(
+            {
+                'success': False,
+                'message': 'Bad Request'
+            },
+            status=status.HTTP_400_BAD_REQUEST)
 
 
 # Verify email
-@api_view(['POST', "PUT"])
+@api_view(['POST', 'PUT'])
 @permission_classes((AllowAny,))
 def verifyEmail(request, uidb64, token):
     # Check user exists by decoding url code
@@ -100,21 +117,26 @@ def verifyEmail(request, uidb64, token):
     if user is not None and signup.account_activation_token.check_token(user, token):
         user = Users.objects.filter(pk=uid).update(verified=True)
 
-        return Response({'user': user,
-                         'message': 'Email Verified.'
-                         },
-                        status=status.HTTP_202_ACCEPTED)
+        return Response(
+            {
+                'success': True,
+                'message': 'Email verified successfully.'
+            },
+            status=status.HTTP_202_ACCEPTED)
     else:
-        return Response({'message': 'Activation link is invalid!'},
-                        status=status.HTTP_400_BAD_REQUEST)
+        return Response(
+            {
+                'success': False,
+                'message': 'Activation link is invalid.'
+            },
+            status=status.HTTP_400_BAD_REQUEST)
 
 
 # Login class
 class LoginAPI(ObtainJSONWebToken):
     def post(self, request, *args, **kwargs):
         response = super(LoginAPI, self).post(request, *args, **kwargs)
-        res = response.data
-        token = res.get('token')
+        token = response.data.get('token')
 
         # token ok, get user
         if token:
@@ -124,31 +146,41 @@ class LoginAPI(ObtainJSONWebToken):
             password = req.get('password')
             email = req.get('email')
             if email is None or password is None:
-                return Response({'success': False,
-                                 'message': 'Missing or incorrect credentials',
-                                 'data': req},
-                                status=status.HTTP_400_BAD_REQUEST)
+                return Response(
+                    {
+                        'success': False,
+                        'message': 'Missing or incorrect credentials',
+                    },
+                    status=status.HTTP_400_BAD_REQUEST)
+
             try:
                 user = Users.objects.get(email=email)
-            except:
-                return Response({'success': False,
-                                 'message': 'User not found',
-                                 'data': req},
-                                status=status.HTTP_404_NOT_FOUND)
+            except Users.DoesNotExist:
+                return Response(
+                    {
+                        'success': False,
+                        'message': 'User not found',
+                    },
+                    status=status.HTTP_404_NOT_FOUND)
 
             if not user.check_password(password):
-                return Response({'success': False,
-                                 'message': 'Incorrect password',
-                                 'data': req},
-                                status=status.HTTP_403_FORBIDDEN)
+                return Response(
+                    {
+                        'success': False,
+                        'message': 'Incorrect password',
+                    },
+                    status=status.HTTP_403_FORBIDDEN)
 
             user = UserSerializer(user).data
             payload = jwt_payload_handler(user)
             token = jwt_encode_handler(payload)
 
-        return Response({'success': True,
-                         'token': token},
-                        status=status.HTTP_200_OK)
+        return Response(
+            {
+                'success': True,
+                'message': 'User authenticated'
+            },
+            status=status.HTTP_200_OK)
 
 
 @api_view(['GET'])
@@ -163,21 +195,28 @@ def get_user(request):
 
     if user is not None:
         serializer = UserSerializer(user).data
-        return Response({'success': True,
-                         'user': serializer},
-                        status=status.HTTP_200_OK)
+        return Response(
+            {
+                'success': True,
+                'user': serializer
+            },
+            status=status.HTTP_200_OK)
     else:
-        return Response({'message': 'Invalid User!'},
-                        status=status.HTTP_400_BAD_REQUEST)
+        return Response(
+            {
+                'success': False,
+                'message': 'Invalid user'
+            },
+            status=status.HTTP_400_BAD_REQUEST)
 
 
 class SocialLoginView(generics.GenericAPIView):
-    """Log in using social oAuth"""
+    # Log in using social oAuth
     serializer_class = SocialSerializer
     permission_classes = [AllowAny]
 
     def post(self, request):
-        """Authenticate user through the provider and access_token"""
+        # Authenticate user through the provider and access_token
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
         provider = serializer.data.get('provider', None)
@@ -188,45 +227,65 @@ class SocialLoginView(generics.GenericAPIView):
                 strategy=strategy, name=provider, redirect_uri=None)
 
         except MissingBackend:
-            return Response({'error': 'Please provide a valid provider'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {
+                    'success': False,
+                    'message': 'Please provide a valid provider'
+                },
+                status=status.HTTP_400_BAD_REQUEST)
         try:
             if isinstance(backend, BaseOAuth2):
                 access_token = serializer.data.get('access_token')
             user = backend.do_auth(access_token)
+
         except HTTPError as error:
-            return Response({
-                "error": {
-                    "access_token": "Invalid token",
-                    "details": str(error)
-                }
-            }, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {
+                    'success': False,
+                    'message': 'Invalid token',
+                    'details': str(error)
+                },
+                status=status.HTTP_400_BAD_REQUEST)
+
         except AuthTokenError as error:
-            return Response({
-                "error": "Invalid credentials",
-                "details": str(error)
-            }, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {
+                    'success': False,
+                    'message': 'Invalid credentials',
+                    'details': str(error)
+                },
+                status=status.HTTP_400_BAD_REQUEST)
 
         try:
             user = backend.do_auth(access_token, user=user)
 
         except HTTPError as error:
-            return Response({
-                "error": "invalid token",
-                "details": str(error)
-            }, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {
+                    'success': False,
+                    'message': 'Invalid token',
+                    'details': str(error)
+                },
+                status=status.HTTP_400_BAD_REQUEST)
 
         except AuthForbidden as error:
-            return Response({
-                "error": "invalid token",
-                "details": str(error)
-            }, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {
+                    'success': False,
+                    'message': 'Invalid token',
+                    'details': str(error)
+                },
+                status=status.HTTP_400_BAD_REQUEST)
 
         if user and user.is_active:
             # generate JWT token
             data = {
-                "token": jwt_encode_handler(
+                'token': jwt_encode_handler(
                     jwt_payload_handler(user)
                 )}
-            return Response({'success': True,
-                             'token': data.get('token')},
-                            status=status.HTTP_200_OK)
+            return Response(
+                {
+                    'success': True,
+                    'message': 'User authenticated'
+                },
+                status=status.HTTP_200_OK)

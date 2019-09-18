@@ -62,21 +62,27 @@ class ReadyAppViewSet(viewsets.ModelViewSet):
                 boto_api_create_usage_plan_key = boto_create_usage_plan_key(
                     boto_create_usage_plan.get('id'), boto_create_api_key.get('id'), 'API_KEY')
 
-                ReadyApps.objects.filter(id=app.id)\
-                    .update(
+                ReadyApps.objects.filter(id=app.id).update(
                     apikey_value=boto_create_api_key.get('value'),
                     apikey_id=boto_create_api_key.get('id'),
                     usage_plan_id=boto_create_usage_plan.get('id')
                 )
+
                 return Response(
                     {
                         'success': True,
-                        'message': 'Data Added',
+                        'message': 'App created successfully!',
                     },
                     status=status.HTTP_201_CREATED
                 )
+
             else:
-                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+                return Response(
+                    {
+                        'success': False,
+                        'message': str(serializer.errors)
+                    },
+                    status=status.HTTP_400_BAD_REQUEST)
 
 
 def boto_create_api_key(name: str, enabled: bool, generateDistinctId: bool, customerId: str):
