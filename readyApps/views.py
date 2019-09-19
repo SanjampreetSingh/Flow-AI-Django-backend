@@ -194,7 +194,7 @@ def activateApiUsagePlan(request):
 # Deactivate Api Usage Plan
 @api_view(['POST'])
 @authentication_classes((JSONWebTokenAuthentication,))
-@permission_classes((IsAuthenticated, IsAdmin | IsIndividual | IsCompany, HasCompleteProfile, HasVerifiedEmail))
+@permission_classes((IsAuthenticated,))
 def deactivateApiUsagePlan(request):
     if request.method == 'POST':
 
