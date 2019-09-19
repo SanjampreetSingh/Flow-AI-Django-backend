@@ -131,8 +131,17 @@ def readyApiDemo(request):
         try:
             app = ReadyApps.objects.get(
                 apikey_value=request.data.get('apikey'))
-        except ReadyApps.DoesNotExist:
-            return Response('App not found.', status=status.HTTP_404_NOT_FOUND)
+        except ReadyApps.DoesNotExist as error:
+            return Response(
+                {
+                    'success': False,
+                    'message': 'App not found.',
+                    'error':
+                    {
+                        'details': str(error)
+                    }
+                },
+                status=status.HTTP_400_BAD_REQUEST)
 
         query = ReadyApis.objects.get(name=request.data.get('name'))
 

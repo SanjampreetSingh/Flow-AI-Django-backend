@@ -32,7 +32,7 @@ class ModuleList(ListAPIView):
                 'success': True,
                 'message': 'Module list.',
                 'data': {
-                    'module': serializer.data
+                    'modules': serializer.data
                 }
             },
             status=status.HTTP_200_OK)
@@ -54,7 +54,7 @@ class ModuleDetails(RetrieveAPIView):
                 'success': True,
                 'message': 'Module details.',
                 'data': {
-                    'readyApisMedia': serializer.data
+                    'module': serializer.data
                 }
             },
             status=status.HTTP_200_OK)
