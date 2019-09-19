@@ -54,7 +54,7 @@ class ModuleDetails(RetrieveAPIView):
                 'success': True,
                 'message': 'Module details.',
                 'data': {
-                    'module': serializer.data
+                    'module': serializer.data[0]
                 }
             },
             status=status.HTTP_200_OK)
