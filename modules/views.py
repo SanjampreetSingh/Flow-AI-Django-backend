@@ -24,6 +24,19 @@ class ModuleList(ListAPIView):
     queryset = Modules.objects.all()
     serializer_class = ModuleSerializer
 
+    def list(self, request):
+        queryset = self.get_queryset()
+        serializer = ModuleSerializer(queryset, many=True)
+        return Response(
+            {
+                'success': True,
+                'message': 'Module list.',
+                'data': {
+                    'module': serializer.data
+                }
+            },
+            status=status.HTTP_200_OK)
+
 
 # Module's Details
 class ModuleDetails(RetrieveAPIView):
@@ -32,3 +45,16 @@ class ModuleDetails(RetrieveAPIView):
     queryset = Modules.objects.all()
     lookup_field = 'reference_url'
     serializer_class = ModuleSerializer
+
+    def retrieve(self, request):
+        queryset = self.get_queryset()
+        serializer = ModuleSerializer(queryset)
+        return Response(
+            {
+                'success': True,
+                'message': 'Module details.',
+                'data': {
+                    'readyApisMedia': serializer.data
+                }
+            },
+            status=status.HTTP_200_OK)

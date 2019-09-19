@@ -58,6 +58,19 @@ class ReadyApiRetrieve(RetrieveAPIView):
     queryset = ReadyApis.objects.all()
     serializer_class = ReadyApiSerializer
 
+    def retrieve(self, request):
+        queryset = self.get_queryset()
+        serializer = ReadyApiSerializer(queryset)
+        return Response(
+            {
+                'success': True,
+                'message': 'Ready api details.',
+                'data': {
+                    'readyApisMedia': serializer.data
+                }
+            },
+            status=status.HTTP_200_OK)
+
 
 # Ready Api's Media List
 class ReadyApiMediaList(ListAPIView):
