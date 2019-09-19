@@ -17,7 +17,8 @@ class ReadyApps(models.Model):
     usage_plan_id = models.CharField(
         "Usage Plan ID", "usage_plan_id", max_length=100, null=True, blank=True)
     reference_url = models.SlugField(unique=True)
-    ready_apis = ArrayField(models.CharField(max_length=150, blank=True))
+    ready_apis = ArrayField(models.CharField(
+        max_length=150, blank=True), blank=True)
     active = models.BooleanField("Is Active", "active", default=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now_add=True)
