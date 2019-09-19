@@ -17,7 +17,10 @@ from rest_framework_jwt.authentication import JSONWebTokenAuthentication
 from users.models import (Users)
 from readyApis.models import (ReadyApis)
 from .models import (ReadyApps, ReadyAppImage)
-from .serializer import (ReadyAppSerializer, ReadyAppImageSerializer)
+from .serializer import (
+    ReadyAppWriteSerializer,
+    ReadyAppReadSerializer,
+    ReadyAppImageSerializer)
 
 
 # Boto3 Connection Variable
@@ -31,9 +34,14 @@ client = boto3.client(
 
 class ReadyAppViewSet(viewsets.ModelViewSet):
     queryset = ReadyApps.objects.all()
-    serializer_class = ReadyAppSerializer
     permission_classes = [IsAuthenticated]
     authentication_classes = [JSONWebTokenAuthentication]
+
+    def get_serializer_class(self):
+        if self.request.method == 'POST':
+            return ReadyAppWriteSerializer
+
+        return ReadyAppReadSerializer
 
     def list(self, request):
         if request.method == 'GET':
@@ -47,7 +55,7 @@ class ReadyAppViewSet(viewsets.ModelViewSet):
                     },
                     status=status.HTTP_404_NOT_FOUND)
 
-            serializer = ReadyAppSerializer(applications, many=True)
+            serializer = ReadyAppReadSerializer(applications, many=True)
             return Response(
                 {
                     'success': True,

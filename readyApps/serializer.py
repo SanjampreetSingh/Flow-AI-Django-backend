@@ -2,11 +2,18 @@ from rest_framework import serializers
 from . import models
 
 
-# ReadyApps Serializer
-class ReadyAppSerializer(serializers.ModelSerializer):
+# ReadyApps Write Serializers
+class ReadyAppWriteSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.ReadyApps
         fields = "__all__"
+
+
+# ReadyApps Read Serializers
+class ReadyAppReadSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.ReadyApps
+        fields = ['id', 'user', 'name', 'description', 'apikey_value']
 
 
 # ReadyAppImage Serializer
