@@ -1,4 +1,3 @@
-import boto3
 import pprint
 # Django
 from django.conf import settings
@@ -21,14 +20,11 @@ from .serializer import (
     ReadyAppWriteSerializer,
     ReadyAppReadSerializer,
     ReadyAppImageSerializer)
-
-
-# Boto3 Connection Variable
-client = boto3.client(
-    'apigateway',
-    region_name='us-east-2',
-    aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
-    aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY
+from comman.boto import(
+    boto_create_api_key,
+    boto_create_usage_plan,
+    boto_create_usage_plan_key,
+    boto_update_usage_plan,
 )
 
 
@@ -76,26 +72,26 @@ class ReadyAppViewSet(viewsets.ModelViewSet):
     def create(self, request):
         if request.method == 'POST':
             # query = UserSubscription.objects.get(user=request.user.id)
-            serializer = ReadyAppSerializer(data=request.data)
+            serializer = ReadyAppWriteSerializer(data=request.data)
             if serializer.is_valid():
                 serializer.validated_data['user'] = request.user
                 app = serializer.save()
 
-                boto_create_api_key = boto_create_api_key(
+                create_api_key = boto_create_api_key(
                     request.data.get('name'), True, True, str(app.id))
 
                 # query.plan.burst_limit, query.plan.rate_limit, query.plan.quota_limit,
 
-                boto_create_usage_plan = boto_create_usage_plan(
+                create_usage_plan = boto_create_usage_plan(
                     request.data.get('name'))
 
-                boto_api_create_usage_plan_key = boto_create_usage_plan_key(
-                    boto_create_usage_plan.get('id'), boto_create_api_key.get('id'), 'API_KEY')
+                api_create_usage_plan_key = boto_create_usage_plan_key(
+                    create_usage_plan.get('id'), create_api_key.get('id'), 'API_KEY')
 
                 ReadyApps.objects.filter(id=app.id).update(
-                    apikey_value=boto_create_api_key.get('value'),
-                    apikey_id=boto_create_api_key.get('id'),
-                    usage_plan_id=boto_create_usage_plan.get('id')
+                    apikey_value=create_api_key.get('value'),
+                    apikey_id=create_api_key.get('id'),
+                    usage_plan_id=create_usage_plan.get('id')
                 )
 
                 return Response(
@@ -117,37 +113,6 @@ class ReadyAppViewSet(viewsets.ModelViewSet):
                         }
                     },
                     status=status.HTTP_400_BAD_REQUEST)
-
-
-def boto_create_api_key(name: str, enabled: bool, generateDistinctId: bool, customerId: str):
-    return client.create_api_key(
-        name=name,
-        enabled=enabled,
-        generateDistinctId=generateDistinctId,
-        customerId=customerId
-    )
-
-
-def boto_create_usage_plan(name: str):
-    return client.create_usage_plan(
-        name=name,
-        throttle={
-            'burstLimit': 10,
-            'rateLimit': 10
-        },
-        quota={
-            'limit': 100,
-            'period': 'MONTH'
-        },
-    )
-
-
-def boto_create_usage_plan_key(usagePlanId, keyId, keyType: str):
-    return client.create_usage_plan_key(
-        usagePlanId=usagePlanId,
-        keyId=keyId,
-        keyType=keyType
-    )
 
 
 class ReadyAppImageViewSet(viewsets.ModelViewSet):
@@ -172,15 +137,11 @@ def activateApiUsagePlan(request):
 
         pprint((api[0].get('apikey_stage')))
 
-        boto_update_usage_plan = client.update_usage_plan(
-            usagePlanId=app[0].get('usage_plan_id'),
-            patchOperations=[
-                {
-                    "op": "add",
-                    "path": "/apiStages",
-                    "value": api[0].get('apikey_stage')
-                },
-            ]
+        update_usage_plan = boto_update_usage_plan(
+            app[0].get('usage_plan_id'),
+            "add",
+            "/apiStages",
+            api[0].get('apikey_stage')
         )
 
         return Response(
@@ -213,15 +174,11 @@ def deactivateApiUsagePlan(request):
 
         pprint((api[0].get('apikey_stage')))
 
-        boto_update_usage_plan = client.update_usage_plan(
-            usagePlanId=app[0].get('usage_plan_id'),
-            patchOperations=[
-                {
-                    "op": "remove",
-                    "path": "/apiStages",
-                    "value": api[0].get('apikey_stage')
-                },
-            ]
+        update_usage_plan = boto_update_usage_plan(
+            app[0].get('usage_plan_id'),
+            "remove",
+            "/apiStages",
+            api[0].get('apikey_stage')
         )
 
         return Response(
