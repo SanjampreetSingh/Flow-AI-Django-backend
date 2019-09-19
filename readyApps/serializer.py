@@ -13,7 +13,9 @@ class ReadyAppWriteSerializer(serializers.ModelSerializer):
 class ReadyAppReadSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.ReadyApps
-        fields = ['id', 'user', 'name', 'description', 'apikey_value']
+        fields = [
+            'id', 'user', 'name', 'description', 'apikey_value', 'reference_url', 'ready_apis'
+        ]
 
 
 # ReadyAppImage Serializer

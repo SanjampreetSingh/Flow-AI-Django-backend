@@ -1,5 +1,6 @@
 from django.db import models
 from datetime import datetime
+from django.contrib.postgres.fields import ArrayField
 from users.models import (Users)
 
 
@@ -15,6 +16,8 @@ class ReadyApps(models.Model):
         "Apikey ID", "apikey_id", max_length=100, null=True, blank=True)
     usage_plan_id = models.CharField(
         "Usage Plan ID", "usage_plan_id", max_length=100, null=True, blank=True)
+    reference_url = models.SlugField(unique=True)
+    ready_apis = ArrayField(models.CharField(max_length=150, blank=True))
     active = models.BooleanField("Is Active", "active", default=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now_add=True)

@@ -40,7 +40,6 @@ class ReadyAppViewSet(viewsets.ModelViewSet):
     def get_serializer_class(self):
         if self.request.method == 'POST':
             return ReadyAppWriteSerializer
-
         return ReadyAppReadSerializer
 
     def list(self, request):
