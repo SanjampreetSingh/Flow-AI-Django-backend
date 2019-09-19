@@ -46,9 +46,9 @@ class ModuleDetails(RetrieveAPIView):
     lookup_field = 'reference_url'
     serializer_class = ModuleSerializer
 
-    def retrieve(self, request):
+    def retrieve(self, request, reference_url):
         queryset = self.get_queryset()
-        serializer = ModuleSerializer(queryset)
+        serializer = ModuleSerializer(queryset, many=True)
         return Response(
             {
                 'success': True,
