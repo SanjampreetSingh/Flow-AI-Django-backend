@@ -75,6 +75,8 @@ class ReadyAppViewSet(viewsets.ModelViewSet):
             serializer = ReadyAppWriteSerializer(data=request.data)
             if serializer.is_valid():
                 serializer.validated_data['user'] = request.user
+                serializer.validated_data['ready_apis'] = []
+                serializer.validated_data['active'] = True
                 app = serializer.save()
 
                 create_api_key = boto_create_api_key(
@@ -134,11 +136,15 @@ def actionsApiUsagePlan(request):
             app = ReadyApps.objects.filter(pk=serializer.data.get('app_id'))
             api = ReadyApis.objects.filter(pk=serializer.data.get('api_id'))
             action = serializer.data.get('action')
-
+            listOfApis = app[0].ready_apis
             if action == 'A':
                 action = 'add'
+                if api[0].name not in listOfApis:
+                    listOfApis.append(api[0].name)
             elif action == 'R':
                 action = 'remove'
+                if api[0].name in listOfApis:
+                    listOfApis.remove(api[0].name)
             else:
                 action = None
 
@@ -148,6 +154,8 @@ def actionsApiUsagePlan(request):
                 '/apiStages',
                 api[0].apikey_stage
             )
+
+            app.update(ready_apis=listOfApis)
 
             return Response(
                 {

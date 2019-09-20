@@ -134,19 +134,21 @@ def readyApiDemo(request):
         if serializer.is_valid(raise_exception=True):
             apikey = settings.DEMO_API_KEY
 
-            query = ReadyApis.objects.get(pk=serializer.data.get('api_id'))
+            api = ReadyApis.objects.get(pk=serializer.data.get('api_id'))
 
             api_data = {
                 'data': serializer.data.get('data')
             }
+
             data = json.dumps(api_data)
+
             headers = {
                 'x-api-key': apikey,
                 'Content-Type': 'application/x-www-form-urlencoded'
             }
 
             req = requests.post(
-                query.cloud_url, data=data, headers=headers)
+                api.cloud_url, data=data, headers=headers)
 
             return Response(
                 {
