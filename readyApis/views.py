@@ -19,7 +19,10 @@ from users.models import (Users)
 from readyApps.models import (ReadyApps)
 from .models import (ReadyApis, ReadyApiMedia, ReadyApiCategory)
 from .serializer import (
-    ReadyApiSerializer, ReadyApiMediaSerializer, ReadyApiCategorySerializer)
+    ReadyApiSerializer,
+    ReadyApiMediaSerializer,
+    ReadyApiCategorySerializer,
+    ReadyApiDemoSerializer)
 
 
 # Ready Api's List
@@ -124,45 +127,33 @@ class ReadyApiCategoryList(ListAPIView):
 
 # Ready Api Demo
 @api_view(['POST'])
-@authentication_classes((JSONWebTokenAuthentication,))
-@permission_classes((IsAuthenticated,))
+@permission_classes((AllowAny,))
 def readyApiDemo(request):
     if request.method == 'POST':
-        try:
-            app = ReadyApps.objects.get(
-                apikey_value=request.data.get('apikey'))
-        except ReadyApps.DoesNotExist as error:
+        serializer = ReadyActionsSerializer(data=request.data)
+        if serializer.is_valid(raise_exception=True):
+            apikey = settings.DEMO_API_KEY
+
+            query = ReadyApis.objects.get(pk=serializer.data.get('api_id'))
+
+            api_data = {
+                'data': serializer.data.get('data')
+            }
+            data = json.dumps(api_data)
+            headers = {
+                'x-api-key': apikey,
+                'Content-Type': 'application/x-www-form-urlencoded'
+            }
+
+            req = requests.post(
+                query.cloud_url, data=data, headers=headers)
+
             return Response(
                 {
-                    'success': False,
-                    'message': 'App not found.',
-                    'error':
-                    {
-                        'details': str(error)
+                    'success': True,
+                    'message': 'Ready api demo.',
+                    'data': {
+                        'demoData': req.json()
                     }
                 },
-                status=status.HTTP_400_BAD_REQUEST)
-
-        query = ReadyApis.objects.get(name=request.data.get('name'))
-
-        api_data = {
-            'data': request.data.get('data')
-        }
-        data = json.dumps(api_data)
-        headers = {
-            'x-api-key': request.data.get('apikey'),
-            'Content-Type': 'application/x-www-form-urlencoded'
-        }
-
-        req = requests.post(
-            query.cloud_url, data=data, headers=headers)
-
-        return Response(
-            {
-                'success': True,
-                'message': 'Ready api demo.',
-                'data': {
-                    'demoData': req.json()
-                }
-            },
-            status=status.HTTP_200_OK)
+                status=status.HTTP_200_OK)

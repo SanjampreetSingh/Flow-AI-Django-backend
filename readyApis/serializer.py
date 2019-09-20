@@ -27,3 +27,13 @@ class ReadyApiMediaSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.ReadyApiMedia
         fields = "__all__"
+
+
+# Ready Api Demo Serializers
+class ReadyApiDemoSerializer(serializers.Serializer):
+    """
+    Serializer which accepts api_id.
+    """
+
+    api_id = serializers.IntegerField(required=True)
+    data = serializers.CharField()
