@@ -130,7 +130,7 @@ class ReadyApiCategoryList(ListAPIView):
 @permission_classes((AllowAny,))
 def readyApiDemo(request):
     if request.method == 'POST':
-        serializer = ReadyActionsSerializer(data=request.data)
+        serializer = ReadyApiDemoSerializer(data=request.data)
         if serializer.is_valid(raise_exception=True):
             apikey = settings.DEMO_API_KEY
 
@@ -157,3 +157,22 @@ def readyApiDemo(request):
                     }
                 },
                 status=status.HTTP_200_OK)
+        else:
+            return Response(
+                {
+                    'success': False,
+                    'message': 'Invalid data.',
+                    'error':
+                    {
+                        'details': serializer.errors
+                    }
+                },
+                status=status.HTTP_400_BAD_REQUEST)
+
+    else:
+        return Response(
+            {
+                'success': False,
+                'message': 'Bad Request.'
+            },
+            status=status.HTTP_400_BAD_REQUEST)
