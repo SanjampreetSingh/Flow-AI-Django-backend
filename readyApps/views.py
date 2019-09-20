@@ -75,7 +75,6 @@ class ReadyAppViewSet(viewsets.ModelViewSet):
             serializer = ReadyAppWriteSerializer(data=request.data)
             if serializer.is_valid():
                 serializer.validated_data['user'] = request.user
-                serializer.validated_data['ready_apis'] = []
                 serializer.validated_data['active'] = True
                 app = serializer.save()
 
@@ -136,7 +135,12 @@ def actionsApiUsagePlan(request):
             app = ReadyApps.objects.filter(pk=serializer.data.get('app_id'))
             api = ReadyApis.objects.filter(pk=serializer.data.get('api_id'))
             action = serializer.data.get('action')
-            listOfApis = app[0].ready_apis
+
+            if app[0].ready_apis is None:
+                listOfApis = []
+            else:
+                listOfApis = app[0].ready_apis
+
             if action == 'A':
                 action = 'add'
                 if api[0].name not in listOfApis:
