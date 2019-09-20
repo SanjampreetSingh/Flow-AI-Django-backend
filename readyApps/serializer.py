@@ -23,3 +23,18 @@ class ReadyAppImageSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.ReadyAppImage
         fields = "__all__"
+
+
+# Ready DeActivate Serializers
+class ReadyActionsSerializer(serializers.Serializer):
+    """
+    Serializer which accepts app_id, api_id and action.
+    """
+    ACTION_CHOICES = (
+        ('A'),
+        ('R'),
+    )
+
+    app_id = serializers.IntegerField(required=True)
+    api_id = serializers.IntegerField(required=True)
+    action = serializers.ChoiceField(choices=ACTION_CHOICES, required=True)

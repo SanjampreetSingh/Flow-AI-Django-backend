@@ -1,4 +1,3 @@
-import pprint
 # Django
 from django.conf import settings
 from django.contrib.sites.shortcuts import get_current_site
@@ -19,7 +18,8 @@ from .models import (ReadyApps, ReadyAppImage)
 from .serializer import (
     ReadyAppWriteSerializer,
     ReadyAppReadSerializer,
-    ReadyAppImageSerializer)
+    ReadyAppImageSerializer,
+    ReadyActionsSerializer)
 from comman.boto import(
     boto_create_api_key,
     boto_create_usage_plan,
@@ -122,71 +122,52 @@ class ReadyAppImageViewSet(viewsets.ModelViewSet):
     authentication_classes = [JSONWebTokenAuthentication]
 
 
-# Activate Api Usage Plan
+# Actions Api Usage Plan
 @api_view(['POST'])
 @authentication_classes((JSONWebTokenAuthentication,))
 @permission_classes((IsAuthenticated,))
-def activateApiUsagePlan(request):
+def actionsApiUsagePlan(request):
     if request.method == 'POST':
+        serializer = ReadyActionsSerializer(data=request.data)
+        if serializer.is_valid(raise_exception=True):
 
-        app = ReadyApps.objects.filter(
-            id=request.data.get('app_id')).values('usage_plan_id')
+            app = ReadyApps.objects.filter(pk=serializer.data.get('app_id'))
+            api = ReadyApis.objects.filter(pk=serializer.data.get('api_id'))
+            action = serializer.data.get('action')
 
-        api = ReadyApis.objects.filter(
-            id=request.data.get('api_id')).values('apikey_stage')
+            if action == 'A':
+                action = 'add'
+            elif action == 'R':
+                action = 'remove'
+            else:
+                action = None
 
-        pprint((api[0].get('apikey_stage')))
+            update_usage_plan = boto_update_usage_plan(
+                app[0].usage_plan_id,
+                action,
+                '/apiStages',
+                api[0].apikey_stage
+            )
 
-        update_usage_plan = boto_update_usage_plan(
-            app[0].get('usage_plan_id'),
-            "add",
-            "/apiStages",
-            api[0].get('apikey_stage')
-        )
+            return Response(
+                {
+                    'success': True,
+                    'message': 'Api added to app.'
+                },
+                status=status.HTTP_200_OK)
 
-        return Response(
-            {
-                'success': True,
-                'message': 'Api added to app.'
-            },
-            status=status.HTTP_200_OK)
-    else:
-        return Response(
-            {
-                'success': False,
-                'message': 'Bad Request.'
-            },
-            status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return Response(
+                {
+                    'success': False,
+                    'message': 'Invalid data.',
+                    'error':
+                    {
+                        'details': serializer.errors
+                    }
+                },
+                status=status.HTTP_400_BAD_REQUEST)
 
-
-# Deactivate Api Usage Plan
-@api_view(['POST'])
-@authentication_classes((JSONWebTokenAuthentication,))
-@permission_classes((IsAuthenticated,))
-def deactivateApiUsagePlan(request):
-    if request.method == 'POST':
-
-        app = ReadyApps.objects.filter(
-            id=request.data.get('app_id')).values('usage_plan_id')
-
-        api = ReadyApis.objects.filter(
-            id=request.data.get('api_id')).values('apikey_stage')
-
-        pprint((api[0].get('apikey_stage')))
-
-        update_usage_plan = boto_update_usage_plan(
-            app[0].get('usage_plan_id'),
-            "remove",
-            "/apiStages",
-            api[0].get('apikey_stage')
-        )
-
-        return Response(
-            {
-                'success': True,
-                'message': 'Api removed from app.'
-            },
-            status=status.HTTP_200_OK)
     else:
         return Response(
             {

@@ -11,7 +11,6 @@ urlpatterns = [
     # User PREFIX
     path('user/', include([
         path('', include(router.urls)),
-        path('ready/app/activate', views.activateApiUsagePlan),
-        path('ready/app/deactivate', views.deactivateApiUsagePlan),
+        path('ready/app/actions', views.actionsApiUsagePlan),
     ])),
 ]
