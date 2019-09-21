@@ -46,6 +46,6 @@ class ReadyApiDemoSerializer(serializers.Serializer):
     Serializer which accepts api_id.
     """
 
-    api_id = serializers.IntegerField(required=True)
+    api_name = serializers.CharField(required=True)
     apikey = serializers.CharField(required=True)
     data = serializers.CharField()

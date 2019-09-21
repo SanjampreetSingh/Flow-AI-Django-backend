@@ -201,7 +201,8 @@ def readyApiCallInfer(request):
         if serializer.is_valid(raise_exception=True):
             apikey = serializer.data.get('apikey')
 
-            api = ReadyApis.objects.get(pk=serializer.data.get('api_id'))
+            api = ReadyApis.objects.filter(
+                reference_api_call=serializer.data.get('api_name'))
 
             api_data = {
                 'data': serializer.data.get('data')
