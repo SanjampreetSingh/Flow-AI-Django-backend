@@ -1,3 +1,5 @@
+import json
+import requests
 # Django
 from django.conf import settings
 from django.contrib.sites.shortcuts import get_current_site
@@ -19,7 +21,8 @@ from .serializer import (
     ReadyAppWriteSerializer,
     ReadyAppReadSerializer,
     ReadyAppImageSerializer,
-    ReadyActionsSerializer)
+    ReadyActionsSerializer,
+    ReadyApiDemoSerializer)
 from comman.boto import(
     boto_create_api_key,
     boto_create_usage_plan,
@@ -192,11 +195,11 @@ def actionsApiUsagePlan(request):
 # Ready Api Demo {TEMP Func}
 @api_view(['POST'])
 @permission_classes((AllowAny,))
-def readyApiCall(request):
+def readyApiCallInfer(request):
     if request.method == 'POST':
         serializer = ReadyApiDemoSerializer(data=request.data)
         if serializer.is_valid(raise_exception=True):
-            apikey = settings.DEMO_API_KEY
+            apikey = serializer.data.get('apikey')
 
             api = ReadyApis.objects.get(pk=serializer.data.get('api_id'))
 

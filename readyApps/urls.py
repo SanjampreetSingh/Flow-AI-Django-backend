@@ -12,5 +12,6 @@ urlpatterns = [
     path('user/', include([
         path('', include(router.urls)),
         path('ready/app/actions', views.actionsApiUsagePlan),
+        path('ready/app/call/infer', views.readyApiCallInfer)
     ])),
 ]

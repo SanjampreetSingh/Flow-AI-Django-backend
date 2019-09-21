@@ -38,3 +38,14 @@ class ReadyActionsSerializer(serializers.Serializer):
     app_id = serializers.IntegerField(required=True)
     api_id = serializers.IntegerField(required=True)
     action = serializers.ChoiceField(choices=ACTION_CHOICES, required=True)
+
+
+# Ready Api Demo Serializers
+class ReadyApiDemoSerializer(serializers.Serializer):
+    """
+    Serializer which accepts api_id.
+    """
+
+    api_id = serializers.IntegerField(required=True)
+    apikey = serializers.CharField(required=True)
+    data = serializers.CharField()
