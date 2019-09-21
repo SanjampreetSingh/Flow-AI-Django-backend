@@ -187,3 +187,58 @@ def actionsApiUsagePlan(request):
                 'message': 'Bad Request.'
             },
             status=status.HTTP_400_BAD_REQUEST)
+
+
+# Ready Api Demo {TEMP Func}
+@api_view(['POST'])
+@permission_classes((AllowAny,))
+def readyApiCall(request):
+    if request.method == 'POST':
+        serializer = ReadyApiDemoSerializer(data=request.data)
+        if serializer.is_valid(raise_exception=True):
+            apikey = settings.DEMO_API_KEY
+
+            api = ReadyApis.objects.get(pk=serializer.data.get('api_id'))
+
+            api_data = {
+                'data': serializer.data.get('data')
+            }
+
+            data = json.dumps(api_data)
+
+            headers = {
+                'x-api-key': apikey,
+                'Content-Type': 'application/x-www-form-urlencoded'
+            }
+
+            req = requests.post(
+                api.cloud_url, data=data, headers=headers)
+
+            return Response(
+                {
+                    'success': True,
+                    'message': 'Ready api demo.',
+                    'data': {
+                        'demoData': req.json()
+                    }
+                },
+                status=status.HTTP_200_OK)
+        else:
+            return Response(
+                {
+                    'success': False,
+                    'message': 'Invalid data.',
+                    'error':
+                    {
+                        'details': serializer.errors
+                    }
+                },
+                status=status.HTTP_400_BAD_REQUEST)
+
+    else:
+        return Response(
+            {
+                'success': False,
+                'message': 'Bad Request.'
+            },
+            status=status.HTTP_400_BAD_REQUEST)

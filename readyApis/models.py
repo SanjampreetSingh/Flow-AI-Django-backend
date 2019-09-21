@@ -36,6 +36,7 @@ class ReadyApis(models.Model):
         "Cloud", "cloud", max_length=2083, null=True, blank=True)
     apikey_stage = models.CharField(
         "Apikey Stage", "apikey_stage", max_length=2083, null=True, blank=True)
+    reference_api_call = models.SlugField(unique=True, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now_add=True)
 
