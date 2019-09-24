@@ -228,7 +228,8 @@ class SocialLoginView(generics.GenericAPIView):
             return response.ErrorMessageWithStatusAndDetails('Invalid token.', status.HTTP_400_BAD_REQUEST, str(error))
 
         except AuthTokenError as error:
-            return response.ErrorMessageWithStatusAndDetails('Invalid credentials.', status.HTTP_400_BAD_REQUEST, str(error))
+            return response.ErrorMessageWithStatusAndDetails('Invalid credentials.', status.HTTP_400_BAD_REQUEST,
+                                                             str(error))
 
         try:
             user = backend.do_auth(access_token, user=user)
