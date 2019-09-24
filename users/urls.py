@@ -4,6 +4,9 @@ from . import views
 
 
 urlpatterns = [
+    # check user
+    path('check/user/', views.checkUser, name='user_register'),
+
     # Register
     path('register/', views.register, name='user_register'),
 

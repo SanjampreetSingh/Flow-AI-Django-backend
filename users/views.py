@@ -28,14 +28,61 @@ from social_core.exceptions import MissingBackend, AuthTokenError, AuthForbidden
 
 # Local
 from .models import (Users)
-from .serializer import (UserSerializer, SocialSerializer)
+from .serializer import (UserSerializer, SocialSerializer, CheckUserSerializer)
 from .token import signup
+from comman import response
 
 # Payload Custom Variables
 jwt_payload_handler = api_settings.JWT_PAYLOAD_HANDLER
 jwt_response_payload_handler = api_settings.JWT_RESPONSE_PAYLOAD_HANDLER
 jwt_encode_handler = api_settings.JWT_ENCODE_HANDLER
 jwt_decode_handler = api_settings.JWT_DECODE_HANDLER
+
+
+# Check User
+@api_view(['POST'])
+@permission_classes((AllowAny,))
+def checkUser(request):
+    if request.method == 'POST':
+        serializer = CheckUserSerializer(data=request.data)
+        if serializer.is_valid():
+            # check if email exists
+            email = request.data.get('email')
+            user = Users.objects.filter(email=email).exists()
+            if user is False:
+                return Response(
+                    {
+                        'key': 1,
+                        'success': True,
+                        'message': 'Add password to complete registeration.',
+                    },
+                    status=status.HTTP_200_OK)
+            else:
+                return Response(
+                    {
+                        'key': 2,
+                        'success': True,
+                        'message': 'Enter password to login.',
+                    },
+                    status=status.HTTP_200_OK)
+        else:
+            return Response(
+                {
+                    'success': False,
+                    'message': 'Invalid data.',
+                    'error':
+                    {
+                        'details': str(serializer.errors)
+                    }
+                },
+                status=status.HTTP_400_BAD_REQUEST)
+    else:
+        return Response(
+            {
+                'success': False,
+                'message': 'Bad Request.'
+            },
+            status=status.HTTP_400_BAD_REQUEST)
 
 
 # register
@@ -80,16 +127,7 @@ def register(request):
                     },
                     status=status.HTTP_201_CREATED)
             else:
-                return Response(
-                    {
-                        'success': False,
-                        'message': 'Invalid data.',
-                        'error':
-                        {
-                            'details': str(serializer.errors)
-                        }
-                    },
-                    status=status.HTTP_400_BAD_REQUEST)
+                return response.SerializerError(details=serializer.errors)
         else:
             return Response(
                 {
