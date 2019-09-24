@@ -199,13 +199,13 @@ def readyApiCallInfer(request):
     if request.method == 'POST':
         serializer = ReadyApiDemoSerializer(data=request.data)
         if serializer.is_valid(raise_exception=True):
-            apikey = serializer.data.get('apikey')
+            apikey = request.data.get('api_key')
 
             api = ReadyApis.objects.filter(
-                reference_api_call=serializer.data.get('api_name'))
+                reference_api_call=request.data.get('api_name'))
 
             api_data = {
-                'data': serializer.data.get('data')
+                'data': request.data.get('data')
             }
 
             data = json.dumps(api_data)
@@ -214,9 +214,8 @@ def readyApiCallInfer(request):
                 'x-api-key': apikey,
                 'Content-Type': 'application/x-www-form-urlencoded'
             }
-
             req = requests.post(
-                api.cloud_url, data=data, headers=headers)
+                api[0].cloud_url, data=data, headers=headers)
 
             return Response(
                 {
