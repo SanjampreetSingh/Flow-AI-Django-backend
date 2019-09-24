@@ -39,7 +39,7 @@ jwt_encode_handler = api_settings.JWT_ENCODE_HANDLER
 jwt_decode_handler = api_settings.JWT_DECODE_HANDLER
 
 
-# Check User
+# Check if user exists
 @api_view(['POST'])
 @permission_classes((AllowAny,))
 def checkUser(request):
@@ -74,7 +74,7 @@ def checkUser(request):
 # register
 @api_view(['POST'])
 @permission_classes((AllowAny,))
-def register(request):
+def registerUser(request):
     if request.method == 'POST':
 
         # check if email exists
@@ -135,11 +135,11 @@ def verifyEmail(request, uidb64, token):
         return response.Error400WithMessage('Activation link is invalid.')
 
 
-# Login class
-class LoginAPI(ObtainJSONWebToken):
+# Authenticate class
+class Authenticate(ObtainJSONWebToken):
     def post(self, request, *args, **kwargs):
-        response = super(LoginAPI, self).post(request, *args, **kwargs)
-        token = response.data.get('token')
+        res = super(Authenticate, self).post(request, *args, **kwargs)
+        token = res.data.get('token')
 
         # token ok, get user
         if token:
@@ -177,7 +177,7 @@ class LoginAPI(ObtainJSONWebToken):
 @api_view(['GET'])
 @permission_classes((IsAuthenticated,))
 @authentication_classes((JSONWebTokenAuthentication,))
-def get_user(request):
+def userDetails(request):
     try:
         uid = str(request.user)
         user = Users.objects.get(pk=uid)
@@ -201,7 +201,7 @@ def get_user(request):
 
 
 # Log in using social oAuth
-class SocialLoginView(generics.GenericAPIView):
+class OAuthenticate(generics.GenericAPIView):
     serializer_class = SocialSerializer
     permission_classes = [AllowAny]
 
@@ -225,7 +225,8 @@ class SocialLoginView(generics.GenericAPIView):
             user = backend.do_auth(access_token)
 
         except HTTPError as error:
-            return response.ErrorMessageWithStatusAndDetails('Invalid token.', status.HTTP_400_BAD_REQUEST, str(error))
+            return response.ErrorMessageWithStatusAndDetails('Invalid token.', status.HTTP_400_BAD_REQUEST,
+                                                             str(error))
 
         except AuthTokenError as error:
             return response.ErrorMessageWithStatusAndDetails('Invalid credentials.', status.HTTP_400_BAD_REQUEST,
@@ -235,10 +236,12 @@ class SocialLoginView(generics.GenericAPIView):
             user = backend.do_auth(access_token, user=user)
 
         except HTTPError as error:
-            return response.ErrorMessageWithStatusAndDetails('Invalid token.', status.HTTP_400_BAD_REQUEST, str(error))
+            return response.ErrorMessageWithStatusAndDetails('Invalid token.', status.HTTP_400_BAD_REQUEST,
+                                                             str(error))
 
         except AuthForbidden as error:
-            return response.ErrorMessageWithStatusAndDetails('Invalid token.', status.HTTP_400_BAD_REQUEST, str(error))
+            return response.ErrorMessageWithStatusAndDetails('Invalid token.', status.HTTP_400_BAD_REQUEST,
+                                                             str(error))
 
         if user and user.is_active:
             # generate JWT token

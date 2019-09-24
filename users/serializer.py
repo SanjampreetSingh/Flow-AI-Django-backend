@@ -9,7 +9,7 @@ UserModel = get_user_model()
 class UserSerializer(serializers.ModelSerializer):
     email = serializers.EmailField(allow_blank=False, validators=[
                                    validators.UniqueValidator(queryset=models.Users.objects.all())])
-    password = serializers.CharField(write_only=True)
+    password = serializers.CharField(write_only=True, min_length=6)
 
     def create(self, validated_data):
         user = super(UserSerializer, self).create(validated_data)
