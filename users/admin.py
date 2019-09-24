@@ -10,10 +10,6 @@ from . import models
 
 User = get_user_model()
 
-admin.site.site_header = 'Flow Admin'
-admin.site.site_title = 'Flow Admin'
-admin.site.index_title = 'Flow'
-
 
 class UserAdmin(BaseUserAdmin):
     form = UserAdminChangeForm

@@ -99,6 +99,7 @@ class Users(AbstractBaseUser):
     class Meta:
         db_table = 'flow_user'
         ordering = ('created_at',)
+        verbose_name_plural = 'Users'
 
     def __str__(self):
         return str("{}".format(self.id))

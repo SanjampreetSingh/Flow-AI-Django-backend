@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'rest_framework_social_oauth2',
     'users',
     'modules',
+    'comman',
     'readyApps',
     'readyApis',
     # 'profiles',
@@ -69,7 +70,7 @@ ROOT_URLCONF = 'flow.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'template/')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -140,6 +141,11 @@ USE_TZ = True
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 STATIC_URL = '/static/'
+
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, "statics"),
+    '/var/www/statics/',
+]
 
 AUTH_USER_MODEL = 'users.Users'
 
