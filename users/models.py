@@ -69,7 +69,7 @@ class Users(AbstractBaseUser):
         "Profile Complete", default=False)  # profile complete
     staff = models.BooleanField("Staff", default=False)  # staff user
     admin = models.BooleanField("Admin", default=False)  # super user
-    verified = models.BooleanField("Verified", default=False)
+    verified = models.BooleanField("Verified", default=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now_add=True)
 

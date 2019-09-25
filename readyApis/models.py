@@ -1,5 +1,6 @@
 from django.db import models
 from datetime import datetime
+from django.contrib.postgres.fields import ArrayField
 
 
 # Ready API Category Model Class
@@ -21,21 +22,23 @@ class ReadyApis(models.Model):
     name = models.CharField("Name", "name", max_length=255)
     category = models.ForeignKey(ReadyApiCategory, on_delete=models.CASCADE)
     active = models.BooleanField("Is Active", "active", default=True)
-    recommendations = models.SmallIntegerField(
-        "Recommendations", "recommendations", default=0)
-    price = models.FloatField("Price", "price", default=0.00)
     tagline = models.CharField("Tagline", "tagline", max_length=255)
     description = models.TextField(
         "Description", "description", null=True, blank=True)
-    use_cases = models.TextField(
-        "Use Cases", "use_cases", null=True, blank=True)
     image = models.CharField(
         "Image", "image", max_length=2083, null=True, blank=True)
     cloud_url = models.CharField(max_length=255, unique=True)
-    cloud = models.CharField(
-        "Cloud", "cloud", max_length=2083, null=True, blank=True)
+    usage_plan = models.CharField(
+        "Usage Plan", "usage_plan", max_length=255, null=True, blank=True)
+    use_cases = models.TextField(
+        "Use Cases", "use_cases", null=True, blank=True)
     apikey_stage = models.CharField(
         "Apikey Stage", "apikey_stage", max_length=2083, null=True, blank=True)
+    recommendations = models.SmallIntegerField(
+        "Recommendations", "recommendations", default=0)
+    price = models.FloatField("Price", "price", default=0.00)
+    tag = ArrayField(models.CharField(
+        max_length=150, blank=True), blank=True, null=True)
     reference_api_call = models.SlugField(unique=True, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now_add=True)
