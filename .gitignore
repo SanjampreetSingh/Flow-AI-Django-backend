@@ -3,3 +3,4 @@
 *.cpython-37.pyc
 seed.json
 .vscode/launch.json
+*.env

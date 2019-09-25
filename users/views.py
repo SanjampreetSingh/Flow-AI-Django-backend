@@ -4,7 +4,7 @@ from requests.exceptions import HTTPError
 # Django
 from django.contrib.sites.shortcuts import get_current_site
 from django.contrib.auth import get_user_model
-from django.core.mail import EmailMessage
+from django.core.mail import EmailMessage, send_mail
 from django.http import HttpResponse, Http404, JsonResponse
 from django.template.loader import render_to_string
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
@@ -70,41 +70,34 @@ def checkUser(request):
 @permission_classes((AllowAny,))
 def registerUser(request):
     if request.method == 'POST':
+        # add data to user table
+        serializer = UserSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.validated_data['active'] = True
+            serializer.validated_data['verified'] = False
+            serializer.validated_data['complete'] = False
+            serializer.validated_data['user_type'] = 'IN'
+            user = serializer.save()
 
-        # check if email exists
-        email = request.data.get('email')
-        user = Users.objects.filter(email=email).exists()
-        if user is False:
+            # email sending code
+            current_site = get_current_site(request)
+            mail_subject = 'Verify Your E-mail Address.'
+            message = render_to_string('verify_email.html', {
+                'user': user,
+                'domain': current_site.domain,
+                'uid': urlsafe_base64_encode(force_bytes(user.pk)),
+                'token': signup.account_activation_token.make_token(user),
+            })
+            to_email = serializer.validated_data['email']
+            email = EmailMessage(
+                mail_subject, message, to=[to_email]
+            )
+            email.send()
 
-            # add data to user table
-            serializer = UserSerializer(data=request.data)
-            if serializer.is_valid():
-                serializer.validated_data['active'] = True
-                serializer.validated_data['verified'] = False
-                serializer.validated_data['complete'] = False
-                serializer.validated_data['user_type'] = 'IN'
-                user = serializer.save()
-
-                # email sending code
-                current_site = get_current_site(request)
-                mail_subject = 'Verify Your E-mail Address.'
-                message = render_to_string('verify_email.html', {
-                    'user': user,
-                    'domain': current_site.domain,
-                    'uid': urlsafe_base64_encode(force_bytes(user.pk)),
-                    'token': signup.account_activation_token.make_token(user),
-                })
-                to_email = serializer.validated_data['email']
-                email = EmailMessage(
-                    mail_subject, message, to=[to_email]
-                )
-                email.send()
-
-                return response.MessageWithStatusAndSuccess(True, 'User registered successfully.', status.HTTP_201_CREATED)
-            else:
-                return response.SerializerError(details=serializer.errors)
+            return response.MessageWithStatusAndSuccess(True, 'User registered successfully.', status.HTTP_201_CREATED)
         else:
-            return response.Error400WithMessage('User already exists.')
+            return response.SerializerError(details=serializer.errors)
+
     else:
         return response.Error400WithMessage('Bad Request.')
 

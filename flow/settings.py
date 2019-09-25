@@ -211,10 +211,16 @@ CORS_ORIGIN_WHITELIST = [
 CSRF_COOKIE_SECURE = False
 
 # email settings
-EMAIL_HOST = 'smtp.mailtrap.io'
-EMAIL_HOST_USER = '7a18bdfa0c4485'
-EMAIL_HOST_PASSWORD = '3b2191c8573578'
-EMAIL_PORT = '2525'
+# EMAIL_HOST = 'smtp.mailtrap.io'
+# EMAIL_HOST_USER = '7a18bdfa0c4485'
+# EMAIL_HOST_PASSWORD = '3b2191c8573578'
+# EMAIL_PORT = '2525'
+EMAIL_BACKEND = "sendgrid_backend.SendgridBackend"
+SENDGRID_API_KEY = "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"
+# Toggle sandbox mode (when running in DEBUG mode)
+SENDGRID_SANDBOX_MODE_IN_DEBUG = False
+# echo to stdout or any other file-like object that is passed to the backend via the stream kwarg.
+SENDGRID_ECHO_TO_STDOUT = True
 
 
 SITE_ID = 1
