@@ -145,7 +145,6 @@ STATIC_URL = '/static/'
 
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "statics"),
-    '/var/www/statics/',
 ]
 
 AUTH_USER_MODEL = 'users.Users'
