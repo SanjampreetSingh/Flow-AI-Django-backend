@@ -40,7 +40,7 @@ class ReadyApis(models.Model):
     price = models.FloatField("Price", "price", default=0.00)
     tag = ArrayField(models.CharField(
         max_length=150, blank=True), blank=True, null=True)
-    reference_api_call = models.SlugField(unique=True, null=True, blank=True)
+    reference_url = models.SlugField(unique=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now_add=True)
 

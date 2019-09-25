@@ -79,7 +79,7 @@ urlpatterns = [
         path('api/', ReadyApiList.as_view(), name="ready_api_list"),
 
         # Ready Api's Retrieve From READY API VIEW
-        re_path(r'api/(?P<pk>\d+)$', ReadyApiRetrieve.as_view(),
+        re_path(r'api/(?P<reference_url>[-\w]+)/$', ReadyApiRetrieve.as_view(),
                 name="ready_api_retrieve"),
 
         # Ready Api's Media List From READY API VIEW

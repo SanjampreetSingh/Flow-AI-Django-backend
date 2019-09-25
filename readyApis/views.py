@@ -54,12 +54,13 @@ class ReadyApiList(ListAPIView):
 class ReadyApiRetrieve(RetrieveAPIView):
     permission_classes = (IsAuthenticated,)
     authentication_classes = (JSONWebTokenAuthentication,)
+    lookup_field = 'reference_url'
 
-    def retrieve(self, request):
+    def retrieve(self, request, reference_url):
         queryset = ReadyApis.objects.all()
-        serializer = ReadyApiSerializer(queryset)
+        serializer = ReadyApiSerializer(queryset, many=True)
         response_data = {
-            'readyApiData': serializer.data
+            'readyApiData': serializer.data[0]
         }
         return response.MessageWithStatusSuccessAndData(True, 'Ready api details.', response_data, status.HTTP_200_OK)
 
