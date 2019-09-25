@@ -3,10 +3,8 @@ import asyncio
 from requests.exceptions import HTTPError
 
 # Django
-from django.contrib.sites.shortcuts import get_current_site
-from django.contrib.auth import get_user_model
 from django.core.mail import EmailMessage, send_mail
-from django.http import HttpResponse, Http404, JsonResponse
+from django.http import HttpResponse, Http404
 from django.template.loader import render_to_string
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes, force_text
@@ -83,9 +81,12 @@ def registerUser(request):
             serializer.validated_data['user_type'] = 'IN'
             user = serializer.save()
 
-            # email sending code
+            # sending verification email
             loop.run_in_executor(
-                None, sendVerificationMail, request, user, serializer.validated_data['email'])
+                None, sendVerificationMail, user, serializer.validated_data['email'])
+            # sending welcome email
+            loop.run_in_executor(
+                None, sendWelcomeMail, user, serializer.validated_data['email'])
 
             return response.MessageWithStatusAndSuccess(True, 'User registered successfully.', status.HTTP_201_CREATED)
         else:
@@ -96,14 +97,25 @@ def registerUser(request):
 
 
 # Send Verification Mail Function
-def sendVerificationMail(request, user, to_email):
-    current_site = get_current_site(request)
+def sendVerificationMail(user, to_email):
     mail_subject = 'Verify Your E-mail Address.'
     message = render_to_string('verify_email.html', {
         'user': user,
-        'domain': current_site.domain,
         'uid': urlsafe_base64_encode(force_bytes(user.pk)),
         'token': signup.account_activation_token.make_token(user),
+    })
+    email = EmailMessage(
+        mail_subject, message, to=[to_email]
+    )
+    email.content_subtype = "html"
+    email.send()
+
+
+# Send Welcome Mail Function
+def sendWelcomeMail(user, to_email):
+    mail_subject = 'Welcome to Flow.'
+    message = render_to_string('welcome_email.html', {
+        'user': user,
     })
     email = EmailMessage(
         mail_subject, message, to=[to_email]
