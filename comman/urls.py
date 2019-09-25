@@ -22,6 +22,11 @@ from readyApis.views import(
     ReadyApiCategoryList,
     readyApiDemo
 )
+# From MODULES VIEW
+from modules.views import(
+    ModuleList,
+    ModuleDetails
+)
 
 
 # Router for User PREFIX
@@ -54,6 +59,13 @@ urlpatterns = [
 
     # Oauth authenticate user From USER VIEW
     path('oauthenticate/', OAuthenticate.as_view(), name='oauthenticate_user'),
+
+    # Modules list From MODULES VIEW
+    path('module/', ModuleList.as_view(), name="module_list"),
+
+    # Modules datails From MODULES VIEW
+    re_path(r'^module/(?P<reference_url>[-\w]+)/$',
+            ModuleDetails.as_view(), name="module_details"),
 
     # User PREFIX for actions used by users
     path('user/', include([

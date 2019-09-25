@@ -1,60 +1,43 @@
-# Django
-from django.conf import settings
-from django.contrib.sites.shortcuts import get_current_site
-from django.http import HttpResponse, Http404
-
 # Django Rest Framework Files
-from rest_framework import viewsets, status
-from rest_framework.permissions import IsAuthenticated, AllowAny, IsAuthenticatedOrReadOnly
+from rest_framework import status
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from rest_framework.generics import ListAPIView, RetrieveAPIView, RetrieveAPIView
-from rest_framework.decorators import api_view, permission_classes, authentication_classes
+from rest_framework.generics import ListAPIView, RetrieveAPIView
+from rest_framework.decorators import permission_classes, authentication_classes
+
 # Django Rest Framework JWT
 from rest_framework_jwt.authentication import JSONWebTokenAuthentication
 
 # Local
 from .models import (Modules)
 from .serializer import (ModuleSerializer)
+from comman import response
 
 
 # Module's List
 class ModuleList(ListAPIView):
     permission_classes = (IsAuthenticated,)
-    authentication_class = (JSONWebTokenAuthentication,)
-    queryset = Modules.objects.all()
-    serializer_class = ModuleSerializer
+    authentication_classes = (JSONWebTokenAuthentication,)
 
     def list(self, request):
-        queryset = self.get_queryset()
+        queryset = Modules.objects.all()
         serializer = ModuleSerializer(queryset, many=True)
-        return Response(
-            {
-                'success': True,
-                'message': 'Module list.',
-                'data': {
-                    'modules': serializer.data
-                }
-            },
-            status=status.HTTP_200_OK)
+        response_data = {
+            'modules': serializer.data
+        }
+        return response.MessageWithStatusAndSuccess(True, 'Module list.', response_data, status.HTTP_200_OK)
 
 
 # Module's Details
 class ModuleDetails(RetrieveAPIView):
     permission_classes = (IsAuthenticated,)
-    authentication_class = (JSONWebTokenAuthentication,)
-    queryset = Modules.objects.all()
+    authentication_classes = (JSONWebTokenAuthentication,)
     lookup_field = 'reference_url'
-    serializer_class = ModuleSerializer
 
     def retrieve(self, request, reference_url):
-        queryset = self.get_queryset()
+        queryset = Modules.objects.all()
         serializer = ModuleSerializer(queryset, many=True)
-        return Response(
-            {
-                'success': True,
-                'message': 'Module details.',
-                'data': {
-                    'module': serializer.data[0]
-                }
-            },
-            status=status.HTTP_200_OK)
+        response_data = {
+            'module': serializer.data[0]
+        }
+        return response.MessageWithStatusAndSuccess(True, 'Module details.', response_data, status.HTTP_200_OK)

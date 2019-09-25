@@ -8,7 +8,7 @@ from django.conf import settings
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.generics import ListAPIView, RetrieveAPIView
-from rest_framework.decorators import api_view, permission_classes
+from rest_framework.decorators import api_view, permission_classes, authentication_classes
 
 # Django Rest Framework JWT
 from rest_framework_jwt.authentication import JSONWebTokenAuthentication
@@ -31,7 +31,7 @@ from comman import response
 # Ready Api's List
 class ReadyApiList(ListAPIView):
     permission_classes = (IsAuthenticated,)
-    authentication_class = (JSONWebTokenAuthentication,)
+    authentication_classes = (JSONWebTokenAuthentication,)
 
     def get_queryset(self):
         category = self.request.query_params.get('category', None)
@@ -53,7 +53,7 @@ class ReadyApiList(ListAPIView):
 # Ready Api's Retrieve
 class ReadyApiRetrieve(RetrieveAPIView):
     permission_classes = (IsAuthenticated,)
-    authentication_class = (JSONWebTokenAuthentication,)
+    authentication_classes = (JSONWebTokenAuthentication,)
 
     def retrieve(self, request):
         queryset = ReadyApis.objects.all()
@@ -67,7 +67,7 @@ class ReadyApiRetrieve(RetrieveAPIView):
 # Ready Api's Media List
 class ReadyApiMediaList(ListAPIView):
     permission_classes = (IsAuthenticated,)
-    authentication_class = (JSONWebTokenAuthentication,)
+    authentication_classes = (JSONWebTokenAuthentication,)
 
     def get_queryset(self):
         category = self.request.query_params.get('category', None)
@@ -89,7 +89,7 @@ class ReadyApiMediaList(ListAPIView):
 # Ready Api Category List
 class ReadyApiCategoryList(ListAPIView):
     permission_classes = (IsAuthenticated,)
-    authentication_class = (JSONWebTokenAuthentication,)
+    authentication_classes = (JSONWebTokenAuthentication,)
 
     def list(self, request):
         queryset = ReadyApiCategory.objects.all()
