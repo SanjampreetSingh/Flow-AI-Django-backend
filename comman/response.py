@@ -44,3 +44,13 @@ def MessageWithStatusAndSuccess(success=True, message=None, status=None):
             'message': message
         },
         status=status)
+
+
+def MessageWithStatusSuccessAndData(success=True, message=None, data=None, status=None):
+    return Response(
+        {
+            'success': success,
+            'message': message,
+            'data': data
+        },
+        status=status)

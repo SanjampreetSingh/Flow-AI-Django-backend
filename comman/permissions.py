@@ -2,7 +2,7 @@ from rest_framework import permissions
 
 
 class HasCompleteProfile(permissions.BasePermission):
-    message = 'Complete your profile first'
+    message = 'Complete your profile first.'
 
     def has_permission(self, request, view):
         if request.user.complete is True:
@@ -10,7 +10,7 @@ class HasCompleteProfile(permissions.BasePermission):
 
 
 class HasVerifiedEmail(permissions.BasePermission):
-    message = 'Verify your email first'
+    message = 'Verify your email first.'
 
     def has_permission(self, request, view):
         if request.user.verified is True:

@@ -1,5 +1,7 @@
 from django.urls import path, include, re_path
+from rest_framework.routers import DefaultRouter
 from rest_framework_jwt.views import verify_jwt_token
+# From USER VIEW
 from users.views import (
     checkUser,
     registerUser,
@@ -8,6 +10,16 @@ from users.views import (
     userDetails,
     OAuthenticate
 )
+# From APPS VIEW
+from apps.views import(
+    Apps
+)
+
+# Router for User PREFIX
+users_router = DefaultRouter()
+
+# App ViewSet From App VIEW
+users_router.register('app', Apps)
 
 
 urlpatterns = [
@@ -32,8 +44,12 @@ urlpatterns = [
     path('user-details/', userDetails, name='user_details'),
 
     # Oauth authenticate user From USER VIEW
-    path('oauthenticate/', OAuthenticate.as_view(),
-         name='oauthenticate_user')
+    path('oauthenticate/', OAuthenticate.as_view(), name='oauthenticate_user'),
 
+    # User PREFIX for actions used by users
+    path('user/', include([
+        # Default Router for USER PREFIX
+        path('', include(users_router.urls)),
+    ])),
 
 ]
