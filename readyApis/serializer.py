@@ -32,7 +32,7 @@ class ReadyApiMediaSerializer(serializers.ModelSerializer):
 # Ready Api Demo Serializers
 class ReadyApiDemoSerializer(serializers.Serializer):
     """
-    Serializer which accepts api_id.
+    Serializer which accepts api_id and data.
     """
 
     api_id = serializers.IntegerField(required=True)

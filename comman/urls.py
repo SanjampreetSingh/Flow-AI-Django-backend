@@ -14,6 +14,15 @@ from users.views import (
 from apps.views import(
     Apps
 )
+# From READY API VIEW
+from readyApis.views import(
+    ReadyApiList,
+    ReadyApiRetrieve,
+    ReadyApiMediaList,
+    ReadyApiCategoryList,
+    readyApiDemo
+)
+
 
 # Router for User PREFIX
 users_router = DefaultRouter()
@@ -50,6 +59,27 @@ urlpatterns = [
     path('user/', include([
         # Default Router for USER PREFIX
         path('', include(users_router.urls)),
+    ])),
+
+    # ready PREFIX for actions used from READY API's
+    path('ready/', include([
+        # Ready Api's List From READY API VIEW
+        path('api/', ReadyApiList.as_view(), name="ready_api_list"),
+
+        # Ready Api's Retrieve From READY API VIEW
+        re_path(r'api/(?P<pk>\d+)$', ReadyApiRetrieve.as_view(),
+                name="ready_api_retrieve"),
+
+        # Ready Api's Media List From READY API VIEW
+        path('api-media/', ReadyApiMediaList.as_view(),
+             name="ready_api_image_list"),
+
+        # Ready Api Category List From READY API VIEW
+        path('api-category/', ReadyApiCategoryList.as_view(),
+             name='ready_api_category_list'),
+
+        # Ready Api Demo From READY API VIEW
+        path('api/demo', readyApiDemo, name='ready_api_category_list'),
     ])),
 
 ]

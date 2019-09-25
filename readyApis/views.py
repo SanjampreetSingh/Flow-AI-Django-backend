@@ -1,36 +1,37 @@
 import json
 import requests
+
 # Django
 from django.conf import settings
-from django.contrib.sites.shortcuts import get_current_site
-from django.http import HttpResponse, Http404
 
 # Django Rest Framework Files
-from rest_framework import viewsets, status
-from rest_framework.permissions import IsAuthenticated, AllowAny, IsAuthenticatedOrReadOnly
-from rest_framework.response import Response
+from rest_framework import status
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.generics import ListAPIView, RetrieveAPIView
-from rest_framework.decorators import api_view, permission_classes, authentication_classes
+from rest_framework.decorators import api_view, permission_classes
+
 # Django Rest Framework JWT
 from rest_framework_jwt.authentication import JSONWebTokenAuthentication
 
 # Local
-from users.models import (Users)
-from readyApps.models import (ReadyApps)
-from .models import (ReadyApis, ReadyApiMedia, ReadyApiCategory)
+from .models import (
+    ReadyApis,
+    ReadyApiMedia,
+    ReadyApiCategory
+)
 from .serializer import (
     ReadyApiSerializer,
     ReadyApiMediaSerializer,
     ReadyApiCategorySerializer,
-    ReadyApiDemoSerializer)
+    ReadyApiDemoSerializer
+)
+from comman import response
 
 
 # Ready Api's List
 class ReadyApiList(ListAPIView):
     permission_classes = (IsAuthenticated,)
     authentication_class = (JSONWebTokenAuthentication,)
-    queryset = ReadyApis.objects.all()
-    serializer_class = ReadyApiSerializer
 
     def get_queryset(self):
         category = self.request.query_params.get('category', None)
@@ -43,44 +44,30 @@ class ReadyApiList(ListAPIView):
     def list(self, request):
         queryset = self.get_queryset()
         serializer = ReadyApiSerializer(queryset, many=True)
-        return Response(
-            {
-                'success': True,
-                'message': 'Ready api list.',
-                'data': {
-                    'readyApis': serializer.data
-                }
-            },
-            status=status.HTTP_200_OK)
+        response_data = {
+            'readyApis': serializer.data
+        }
+        return response.MessageWithStatusSuccessAndData(True, 'Ready api list.', response_data, status.HTTP_200_OK)
 
 
 # Ready Api's Retrieve
 class ReadyApiRetrieve(RetrieveAPIView):
     permission_classes = (IsAuthenticated,)
     authentication_class = (JSONWebTokenAuthentication,)
-    queryset = ReadyApis.objects.all()
-    serializer_class = ReadyApiSerializer
 
     def retrieve(self, request):
-        queryset = self.get_queryset()
+        queryset = ReadyApis.objects.all()
         serializer = ReadyApiSerializer(queryset)
-        return Response(
-            {
-                'success': True,
-                'message': 'Ready api details.',
-                'data': {
-                    'readyApisMedia': serializer.data
-                }
-            },
-            status=status.HTTP_200_OK)
+        response_data = {
+            'readyApiData': serializer.data
+        }
+        return response.MessageWithStatusSuccessAndData(True, 'Ready api details.', response_data, status.HTTP_200_OK)
 
 
 # Ready Api's Media List
 class ReadyApiMediaList(ListAPIView):
     permission_classes = (IsAuthenticated,)
     authentication_class = (JSONWebTokenAuthentication,)
-    queryset = ReadyApiMedia.objects.all()
-    serializer_class = ReadyApiMediaSerializer
 
     def get_queryset(self):
         category = self.request.query_params.get('category', None)
@@ -91,38 +78,26 @@ class ReadyApiMediaList(ListAPIView):
         return queryset
 
     def list(self, request):
-        queryset = self.get_queryset()
+        queryset = ReadyApiMedia.objects.all()
         serializer = ReadyApiMediaSerializer(queryset, many=True)
-        return Response(
-            {
-                'success': True,
-                'message': 'Ready api media list.',
-                'data': {
-                    'readyApisMedia': serializer.data
-                }
-            },
-            status=status.HTTP_200_OK)
+        response_data = {
+            'readyApisMedia': serializer.data
+        }
+        return response.MessageWithStatusSuccessAndData(True, 'Ready api media list.', response_data, status.HTTP_200_OK)
 
 
 # Ready Api Category List
 class ReadyApiCategoryList(ListAPIView):
     permission_classes = (IsAuthenticated,)
     authentication_class = (JSONWebTokenAuthentication,)
-    queryset = ReadyApiCategory.objects.all()
-    serializer_class = ReadyApiCategorySerializer
 
     def list(self, request):
-        queryset = self.get_queryset()
+        queryset = ReadyApiCategory.objects.all()
         serializer = ReadyApiCategorySerializer(queryset, many=True)
-        return Response(
-            {
-                'success': True,
-                'message': 'Ready api media list.',
-                'data': {
-                    'readyApisCategory': serializer.data
-                }
-            },
-            status=status.HTTP_200_OK)
+        response_data = {
+            'readyApisCategory': serializer.data
+        }
+        return response.MessageWithStatusSuccessAndData(True, 'Ready api categories list.', response_data, status.HTTP_200_OK)
 
 
 # Ready Api Demo
@@ -150,31 +125,12 @@ def readyApiDemo(request):
             req = requests.post(
                 api.cloud_url, data=data, headers=headers)
 
-            return Response(
-                {
-                    'success': True,
-                    'message': 'Ready api demo.',
-                    'data': {
-                        'demoData': req.json()
-                    }
-                },
-                status=status.HTTP_200_OK)
-        else:
-            return Response(
-                {
-                    'success': False,
-                    'message': 'Invalid data.',
-                    'error':
-                    {
-                        'details': serializer.errors
-                    }
-                },
-                status=status.HTTP_400_BAD_REQUEST)
+            response_data = {
+                'demoData': req.json()
+            }
 
+            return response.MessageWithStatusSuccessAndData(True, 'Ready api demo.', response_data, status.HTTP_200_OK)
+        else:
+            return response.SerializerError(serializer.errors)
     else:
-        return Response(
-            {
-                'success': False,
-                'message': 'Bad Request.'
-            },
-            status=status.HTTP_400_BAD_REQUEST)
+        return response.Error400WithMessage('Bad Request.')

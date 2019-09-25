@@ -21,10 +21,5 @@ urlpatterns = [
     path('api/', include([
         path('auth/', include('rest_framework_social_oauth2.urls')),
         path('', include('comman.urls')),
-        # path('', include('modules.urls')),
-        # path('', include('readyApps.urls')),
-        # path('', include('readyApis.urls')),
-        # path('', include('profiles.urls')),
-        # path('', include('plans.urls')),
     ])),
 ]

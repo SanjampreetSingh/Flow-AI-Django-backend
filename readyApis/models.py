@@ -12,6 +12,7 @@ class ReadyApiCategory(models.Model):
     class Meta:
         db_table = 'flow_ready_api_category'
         ordering = ('created_at',)
+        verbose_name_plural = 'Categories'
 
     def __str__(self):
         return "{}".format(self.name)
@@ -25,8 +26,8 @@ class ReadyApis(models.Model):
     tagline = models.CharField("Tagline", "tagline", max_length=255)
     description = models.TextField(
         "Description", "description", null=True, blank=True)
-    image = models.CharField(
-        "Image", "image", max_length=2083, null=True, blank=True)
+    image_url = models.CharField(
+        "Image", "image_url", max_length=2083, null=True, blank=True)
     cloud_url = models.CharField(max_length=255, unique=True)
     usage_plan = models.CharField(
         "Usage Plan", "usage_plan", max_length=255, null=True, blank=True)
@@ -46,6 +47,7 @@ class ReadyApis(models.Model):
     class Meta:
         db_table = 'flow_ready_api'
         ordering = ('created_at',)
+        verbose_name_plural = 'Ready Apis'
 
     def __str__(self):
         return "{}".format(self.name)
@@ -63,8 +65,8 @@ def media_directory_path(instance, filename):
 # Ready API Media Model Class
 class ReadyApiMedia(models.Model):
     category = models.ForeignKey(ReadyApiCategory, on_delete=models.CASCADE)
-    media = models.FileField("Media", "media", upload_to=media_directory_path,
-                             max_length=255, null=True, blank=True)
+    media = models.FileField(
+        "Media", "media", upload_to=media_directory_path, max_length=255, null=True, blank=True)
     url = models.CharField(
         "URL", "url", max_length=2083, blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -73,3 +75,4 @@ class ReadyApiMedia(models.Model):
     class Meta:
         db_table = 'flow_ready_api_media'
         ordering = ('created_at',)
+        verbose_name_plural = 'Media'
