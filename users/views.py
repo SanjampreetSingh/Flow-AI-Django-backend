@@ -1,4 +1,5 @@
 import json
+import asyncio
 from requests.exceptions import HTTPError
 
 # Django
@@ -37,6 +38,9 @@ jwt_payload_handler = api_settings.JWT_PAYLOAD_HANDLER
 jwt_response_payload_handler = api_settings.JWT_RESPONSE_PAYLOAD_HANDLER
 jwt_encode_handler = api_settings.JWT_ENCODE_HANDLER
 jwt_decode_handler = api_settings.JWT_DECODE_HANDLER
+
+# Asyncio loop
+loop = asyncio.get_event_loop()
 
 
 # Check if user exists
@@ -80,19 +84,8 @@ def registerUser(request):
             user = serializer.save()
 
             # email sending code
-            current_site = get_current_site(request)
-            mail_subject = 'Verify Your E-mail Address.'
-            message = render_to_string('verify_email.html', {
-                'user': user,
-                'domain': current_site.domain,
-                'uid': urlsafe_base64_encode(force_bytes(user.pk)),
-                'token': signup.account_activation_token.make_token(user),
-            })
-            to_email = serializer.validated_data['email']
-            email = EmailMessage(
-                mail_subject, message, to=[to_email]
-            )
-            email.send()
+            loop.run_in_executor(
+                None, sendVerificationMail, request, user, serializer.validated_data['email'])
 
             return response.MessageWithStatusAndSuccess(True, 'User registered successfully.', status.HTTP_201_CREATED)
         else:
@@ -100,6 +93,23 @@ def registerUser(request):
 
     else:
         return response.Error400WithMessage('Bad Request.')
+
+
+# Send Verification Mail Function
+def sendVerificationMail(request, user, to_email):
+    current_site = get_current_site(request)
+    mail_subject = 'Verify Your E-mail Address.'
+    message = render_to_string('verify_email.html', {
+        'user': user,
+        'domain': current_site.domain,
+        'uid': urlsafe_base64_encode(force_bytes(user.pk)),
+        'token': signup.account_activation_token.make_token(user),
+    })
+    email = EmailMessage(
+        mail_subject, message, to=[to_email]
+    )
+    email.content_subtype = "html"
+    email.send()
 
 
 # Verify email
