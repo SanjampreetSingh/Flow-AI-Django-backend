@@ -50,21 +50,15 @@ def checkUser(request):
             email = request.data.get('email')
             user = Users.objects.filter(email=email).exists()
             if user is False:
-                return Response(
-                    {
-                        'key': 1,
-                        'success': True,
-                        'message': 'Add password to complete registeration.',
-                    },
-                    status=status.HTTP_200_OK)
+                response_data = {
+                    'key': 1
+                }
+                return response.MessageWithStatusSuccessAndData(True, 'Add password to complete registeration.', response_data, status.HTTP_200_OK)
             else:
-                return Response(
-                    {
-                        'key': 2,
-                        'success': True,
-                        'message': 'Enter password to login.',
-                    },
-                    status=status.HTTP_200_OK)
+                response_data = {
+                    'key': 2
+                }
+                return response.MessageWithStatusSuccessAndData(True, 'Enter password to login.', response_data, status.HTTP_200_OK)
         else:
             return response.SerializerError(details=serializer.errors)
     else:
@@ -162,16 +156,10 @@ class Authenticate(ObtainJSONWebToken):
             user = UserSerializer(user).data
             token = jwt_encode_handler(jwt_payload_handler(user))
 
-        return Response(
-            {
-                'success': True,
-                'message': 'User authenticated.',
-                'data':
-                {
-                    'token': token
-                }
-            },
-            status=status.HTTP_200_OK)
+        response_data = {
+            'token': token
+        }
+        return response.MessageWithStatusSuccessAndData(True, 'User authenticated.', response_data, status.HTTP_200_OK)
 
 
 @api_view(['GET'])
@@ -186,16 +174,10 @@ def userDetails(request):
 
     if user is not None:
         serializer = UserSerializer(user).data
-        return Response(
-            {
-                'success': True,
-                'message': 'User data.',
-                'data':
-                {
-                    'user': serializer
-                }
-            },
-            status=status.HTTP_200_OK)
+        response_data = {
+            'user': serializer
+        }
+        return response.MessageWithStatusSuccessAndData(True, 'User data.', response_data, status.HTTP_200_OK)
     else:
         return response.Error400WithMessage('Invalid user.')
 
@@ -225,35 +207,25 @@ class OAuthenticate(generics.GenericAPIView):
             user = backend.do_auth(access_token)
 
         except HTTPError as error:
-            return response.ErrorMessageWithStatusAndDetails('Invalid token.', status.HTTP_400_BAD_REQUEST,
-                                                             str(error))
+            return response.ErrorMessageWithStatusAndDetails('Invalid token.', status.HTTP_400_BAD_REQUEST, str(error))
 
         except AuthTokenError as error:
-            return response.ErrorMessageWithStatusAndDetails('Invalid credentials.', status.HTTP_400_BAD_REQUEST,
-                                                             str(error))
+            return response.ErrorMessageWithStatusAndDetails('Invalid credentials.', status.HTTP_400_BAD_REQUEST, str(error))
 
         try:
             user = backend.do_auth(access_token, user=user)
 
         except HTTPError as error:
-            return response.ErrorMessageWithStatusAndDetails('Invalid token.', status.HTTP_400_BAD_REQUEST,
-                                                             str(error))
+            return response.ErrorMessageWithStatusAndDetails('Invalid token.', status.HTTP_400_BAD_REQUEST, str(error))
 
         except AuthForbidden as error:
-            return response.ErrorMessageWithStatusAndDetails('Invalid token.', status.HTTP_400_BAD_REQUEST,
-                                                             str(error))
+            return response.ErrorMessageWithStatusAndDetails('Invalid token.', status.HTTP_400_BAD_REQUEST, str(error))
 
         if user and user.is_active:
             # generate JWT token
             token = jwt_encode_handler(jwt_payload_handler(user))
 
-            return Response(
-                {
-                    'success': True,
-                    'message': 'User authenticated.',
-                    'data':
-                    {
-                        'token': token
-                    }
-                },
-                status=status.HTTP_200_OK)
+            response_data = {
+                'token': token
+            }
+            return response.MessageWithStatusSuccessAndData(True, 'User authenticated.', response_data, status.HTTP_200_OK)
