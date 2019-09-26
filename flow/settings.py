@@ -216,8 +216,8 @@ SENDGRID_API_KEY = "SG.2kubFVgcSbmYLtLDzqZqjw.580M8bc9eLCl9ZMP50zcTUwXeioe3vjbDz
 # Toggle sandbox mode (when running in DEBUG mode)
 SENDGRID_SANDBOX_MODE_IN_DEBUG = False
 # echo to stdout or any other file-like object that is passed to the backend via the stream kwarg.
-SENDGRID_ECHO_TO_STDOUT = True
-DEFAULT_FROM_EMAIL = 'no-reply@theflowai.com'
+SENDGRID_ECHO_TO_STDOUT = False
+DEFAULT_FROM_EMAIL = 'support@theflowai.com'
 
 SITE_ID = 1
 

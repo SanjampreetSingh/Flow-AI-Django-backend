@@ -95,14 +95,14 @@ def registerUser(request):
 
 # Send Verification Mail Function
 def sendVerificationMail(user, to_email):
-    mail_subject = 'Verify Your E-mail Address.'
+    mail_subject = 'Welcome to Flow!'
     message = render_to_string('verify_email.html', {
         'user': user,
         'uid': urlsafe_base64_encode(force_bytes(user.pk)),
         'token': signup.account_activation_token.make_token(user),
     })
     email = EmailMessage(
-        mail_subject, message, to=[to_email]
+        mail_subject, message, 'Flow <no-reply@theflowai.com> ', to=[to_email]
     )
     email.content_subtype = "html"
     email.send()
