@@ -25,7 +25,7 @@ from comman.permissions import(
 from comman import response
 
 
-class Apps(viewsets.ModelViewSet):
+class AppsView(viewsets.ModelViewSet):
     queryset = Apps.objects.all()
     permission_classes = [IsAuthenticated, HasVerifiedEmail]
     authentication_classes = [JSONWebTokenAuthentication]
@@ -42,7 +42,7 @@ class Apps(viewsets.ModelViewSet):
             except Apps.DoesNotExist:
                 return response.MessageWithStatusAndSuccess(False, 'Application not found.', status.HTTP_404_NOT_FOUND)
 
-            serializer = get_serializer_class(applications, many=True)
+            serializer = AppReadSerializer(applications, many=True)
 
             response_data = {
                 'application': serializer.data
@@ -53,7 +53,7 @@ class Apps(viewsets.ModelViewSet):
 
     def create(self, request):
         if request.method == 'POST':
-            serializer = get_serializer_class(data=request.data)
+            serializer = AppWriteSerializer(data=request.data)
             if serializer.is_valid():
                 serializer.validated_data['user'] = request.user
                 serializer.validated_data['active'] = True

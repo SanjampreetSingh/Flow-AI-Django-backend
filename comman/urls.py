@@ -12,7 +12,7 @@ from users.views import (
 )
 # From APPS VIEW
 from apps.views import(
-    Apps
+    AppsView
 )
 # From READY API VIEW
 from readyApis.views import(
@@ -33,7 +33,7 @@ from modules.views import(
 users_router = DefaultRouter()
 
 # App ViewSet From App VIEW
-users_router.register('app', Apps)
+users_router.register('app', AppsView)
 
 
 urlpatterns = [
