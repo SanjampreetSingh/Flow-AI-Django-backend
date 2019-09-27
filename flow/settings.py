@@ -49,8 +49,8 @@ INSTALLED_APPS = [
     'apps',
     'readyApis',
     'modules',
-    # 'readyApps',
-    # 'profiles',
+    'package',
+    'nuxtApp',
     # 'plans',
 ]
 
