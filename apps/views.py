@@ -54,24 +54,27 @@ class AppsView(viewsets.ModelViewSet):
 
     def create(self, request):
         if request.method == 'POST':
-            serializer = AppWriteSerializer(data=request.data)
-            if serializer.is_valid():
-                serializer.validated_data['user'] = request.user
-                serializer.validated_data['active'] = True
-                app = serializer.save()
+            reference_url = request.data.get('reference_url')
+            if Apps.objects.filter(reference_url=reference_url, user_id=request.user).exists() is not True:
+                serializer = AppWriteSerializer(data=request.data)
+                if serializer.is_valid():
+                    serializer.validated_data['user'] = request.user
+                    serializer.validated_data['active'] = True
+                    app = serializer.save()
 
-                create_api_key = boto_create_api_key(
-                    request.data.get('name'), True, True, str(app.id))
+                    create_api_key = boto_create_api_key(
+                        request.data.get('name'), True, True, str(app.id))
 
-                Apps.objects.filter(id=app.id).update(
-                    apikey_value=create_api_key.get('value'),
-                    apikey_id=create_api_key.get('id'),
-                )
+                    Apps.objects.filter(id=app.id).update(
+                        apikey_value=create_api_key.get('value'),
+                        apikey_id=create_api_key.get('id'),
+                    )
+                    return response.MessageWithStatusAndSuccess(True, 'App created successfully.', status.HTTP_201_CREATED)
 
-                return response.MessageWithStatusAndSuccess(True, 'App created successfully.', status.HTTP_201_CREATED)
-
+                else:
+                    return response.SerializerError(serializer.errors)
             else:
-                return response.SerializerError(serializer.errors)
+                return response.Error400WithMessage('User cannot create different applications with same name.')
         else:
             return response.Error400WithMessage('Bad Request.')
 

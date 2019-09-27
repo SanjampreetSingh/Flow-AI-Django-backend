@@ -16,7 +16,7 @@ class Apps(models.Model):
         "Apikey ID", "apikey_id", max_length=100, null=True, blank=True)
     usage_plans = ArrayField(models.CharField(
         max_length=150, blank=True), blank=True, null=True)
-    reference_url = models.SlugField(unique=True)
+    reference_url = models.SlugField()
     active_apis = ArrayField(models.CharField(
         max_length=150, blank=True), blank=True, null=True)
     active = models.BooleanField("Is Active", "active", default=True)
