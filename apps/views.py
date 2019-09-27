@@ -29,6 +29,7 @@ class AppsView(viewsets.ModelViewSet):
     queryset = Apps.objects.all()
     permission_classes = [IsAuthenticated, HasVerifiedEmail]
     authentication_classes = [JSONWebTokenAuthentication]
+    lookup_field = 'reference_url'
 
     def get_serializer_class(self):
         if self.request.method == 'POST':
@@ -73,6 +74,15 @@ class AppsView(viewsets.ModelViewSet):
                 return response.SerializerError(serializer.errors)
         else:
             return response.Error400WithMessage('Bad Request.')
+
+    def update(self, request, pk=None):
+        return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+
+    def partial_update(self, request, pk=None):
+        return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+
+    def destroy(self, request, pk=None):
+        return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
 
 # class ReadyAppImageViewSet(viewsets.ModelViewSet):

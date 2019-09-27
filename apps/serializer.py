@@ -7,6 +7,10 @@ class AppWriteSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Apps
         fields = "__all__"
+        lookup_field = 'reference_url'
+        extra_kwargs = {
+            'url': {'lookup_field': 'reference_url'}
+        }
 
 
 # Apps Read Serializers
@@ -14,8 +18,12 @@ class AppReadSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Apps
         fields = [
-            'id', 'user', 'name', 'description', 'apikey_value', 'reference_url', 'ready_apis'
+            'id', 'user', 'name', 'description', 'apikey_value', 'reference_url', 'active_apis'
         ]
+        lookup_field = 'reference_url'
+        extra_kwargs = {
+            'url': {'lookup_field': 'reference_url'}
+        }
 
 
 # # AppImage Serializer
