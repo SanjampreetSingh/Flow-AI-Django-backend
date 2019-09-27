@@ -1,5 +1,5 @@
 import boto3
-from flow import settings
+from django.conf import settings
 
 # Boto3 Connection Variable
 client = boto3.client(
