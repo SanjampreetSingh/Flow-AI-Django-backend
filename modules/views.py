@@ -25,7 +25,7 @@ class ModuleList(ListAPIView):
         response_data = {
             'modules': serializer.data
         }
-        return response.MessageWithStatusAndSuccess(True, 'Module list.', response_data, status.HTTP_200_OK)
+        return response.MessageWithStatusSuccessAndData(True, 'Module list.', response_data, status.HTTP_200_OK)
 
 
 # Module's Details
@@ -40,4 +40,4 @@ class ModuleDetails(RetrieveAPIView):
         response_data = {
             'module': serializer.data[0]
         }
-        return response.MessageWithStatusAndSuccess(True, 'Module details.', response_data, status.HTTP_200_OK)
+        return response.MessageWithStatusSuccessAndData(True, 'Module details.', response_data, status.HTTP_200_OK)
