@@ -32,3 +32,10 @@ REST_FRAMEWORK = {
         'rest_framework_social_oauth2.authentication.SocialAuthentication',
     ),
 }
+
+
+CORS_ORIGIN_ALLOW_ALL = True
+CORS_ORIGIN_WHITELIST = [
+    # 'http://localhost:8000',
+    # 'http://localhost:8080',
+]
