@@ -18,7 +18,7 @@ class AppReadSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Apps
         fields = [
-            'id', 'user', 'name', 'description', 'apikey_value', 'reference_url', 'active_apis'
+            'id', 'user', 'name', 'description', 'apikey_value', 'reference_url', 'ready_apis', 'custom_apis', 'notebook'
         ]
         lookup_field = 'reference_url'
         extra_kwargs = {
