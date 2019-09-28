@@ -2,7 +2,7 @@ from .base import *
 
 DEBUG = True
 
-ALLOWED_HOSTS = ['167.71.235.193', 'api.theflowai.com']
+ALLOWED_HOSTS = ['167.71.235.193', 'api.theflowai.com', 'localhost']
 
 
 DATABASES = {
