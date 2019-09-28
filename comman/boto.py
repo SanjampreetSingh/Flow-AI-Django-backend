@@ -34,6 +34,9 @@ def boto_create_usage_plan(name: str):
 
 
 def boto_create_usage_plan_key(usagePlanId, keyId, keyType: str):
+    """
+    Creates a usage plan key for adding an existing API key to a usage plan.
+    """
     return client.create_usage_plan_key(
         usagePlanId=usagePlanId,
         keyId=keyId,

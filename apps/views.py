@@ -10,14 +10,16 @@ from rest_framework_jwt.authentication import JSONWebTokenAuthentication
 
 # Local
 from users.models import (Users)
-# from readyApis.models import (ReadyApis)
+from readyApis.models import (ReadyApis)
 from .models import (Apps)
 from .serializer import (
     AppWriteSerializer,
-    AppReadSerializer
+    AppReadSerializer,
+    AppActivateReadyApisSerializer
 )
 from comman.boto import(
     boto_create_api_key,
+    boto_create_usage_plan_key
 )
 from comman.permissions import(
     HasVerifiedEmail
@@ -93,3 +95,45 @@ class AppsView(viewsets.ModelViewSet):
 #     serializer_class = ReadyAppImageSerializer
 #     permission_classes = [IsAuthenticated]
 #     authentication_classes = [JSONWebTokenAuthentication]
+
+
+@api_view(['POST'])
+@authentication_classes((JSONWebTokenAuthentication,))
+@permission_classes((IsAuthenticated,))
+def addReadyApiToUsagePlan(request):
+    """
+    API_KEY from create_api_key() and returns apikey_id, which is saved in App Model.
+    USAGE_PLAN of  READY API is made on Console_AWS and usagePlanId is stored in ReadyApi Model.
+    create_usage_plan_key() is used for adding an existing API key to a usage plan.
+    ACTIVE_APIS[] is updated with activated API Name's
+    """
+    if request.method == 'POST':
+        serializer = AppActivateReadyApisSerializer(data=request.data)
+        if serializer.is_valid(raise_exception=True):
+
+            app = Apps.objects.filter(pk=serializer.data.get('app_id'))
+            api = ReadyApis.objects.filter(pk=serializer.data.get('api_id'))
+
+            if app[0].active_apis is None:
+                listOfApis = []
+            else:
+                listOfApis = app[0].active_apis
+
+            if api[0].name not in listOfApis:
+                listOfApis.append(api[0].name)
+            else:
+                action = None
+
+            create_usage_plan_key = boto_create_usage_plan_key(
+                api[0].usage_plan_id,
+                app[0].apikey_id,
+                'API_KEY'
+            )
+
+            app.update(active_apis=listOfApis)
+
+            return response.MessageWithStatusAndSuccess(True, 'Api added to app.', status.HTTP_200_OK)
+        else:
+            return response.SerializerError(serializer.errors)
+    else:
+        return response.Error400WithMessage('Bad Request.')
