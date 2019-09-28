@@ -48,6 +48,18 @@ def packageReadyApiCallInference(request):
 @permission_classes((AllowAny,))
 def validateApiKey(request):
     if request.method == 'POST':
-        pass
+        serializer = ValidateApiKeySerializer(data=request.data)
+        if serializer.is_valid():
+            try:
+                app = Apps.objects.get(apikey_id=request.data.get('api_key'))
+            except Apps.DoesNotExist:
+                app = None
+
+                if app is not None:
+                    return response.MessageWithStatusAndSuccess(True, 'Api key is valid.', status.HTTP_200_OK)
+                else:
+                    return response.Error400WithMessage('Invalid api key.')
+        else:
+            return response.SerializerError(details=serializer.errors)
     else:
         return response.Error400WithMessage('Bad Request.')

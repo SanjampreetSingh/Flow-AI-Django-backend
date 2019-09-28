@@ -7,7 +7,8 @@ from readyApis.models import (
 )
 
 from .serializer import(
-    InferenceSerializer
+    InferenceSerializer,
+    ValidateApiKeySerializer
 )
 
 
