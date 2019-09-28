@@ -111,7 +111,8 @@ def addReadyApiToUsagePlan(request):
         serializer = AppActivateReadyApisSerializer(data=request.data)
         if serializer.is_valid(raise_exception=True):
 
-            app = Apps.objects.filter(pk=serializer.data.get('app_id'))
+            app = Apps.objects.filter(
+                reference_url=serializer.data.get('app_reference_url'))
             api = ReadyApis.objects.filter(pk=serializer.data.get('api_id'))
 
             if app[0].active_apis is None:
