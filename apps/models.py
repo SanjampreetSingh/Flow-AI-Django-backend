@@ -17,7 +17,11 @@ class Apps(models.Model):
     usage_plans = ArrayField(models.CharField(
         max_length=150, blank=True), blank=True, null=True)
     reference_url = models.SlugField()
-    active_apis = ArrayField(models.CharField(
+    ready_apis = ArrayField(models.CharField(
+        max_length=150, blank=True), blank=True, null=True)
+    custom_apis = ArrayField(models.CharField(
+        max_length=150, blank=True), blank=True, null=True)
+    notebook = ArrayField(models.CharField(
         max_length=150, blank=True), blank=True, null=True)
     active = models.BooleanField("Is Active", "active", default=True)
     created_at = models.DateTimeField(auto_now_add=True)

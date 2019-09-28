@@ -42,3 +42,12 @@ def packageReadyApiCallInference(request):
             return response.SerializerError(serializer.errors)
     else:
         return response.Error400WithMessage('Bad Request.')
+
+
+@api_view(['POST'])
+@permission_classes((AllowAny,))
+def validateApiKey(request):
+    if request.method == 'POST':
+        pass
+    else:
+        return response.Error400WithMessage('Bad Request.')

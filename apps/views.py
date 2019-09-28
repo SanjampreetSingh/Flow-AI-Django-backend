@@ -115,13 +115,23 @@ def addReadyApiToUsagePlan(request):
                 reference_url=serializer.data.get('app_reference_url'))
             api = ReadyApis.objects.filter(pk=serializer.data.get('api_id'))
 
-            if app[0].active_apis is None:
+            if app[0].ready_apis is None:
                 listOfApis = []
             else:
-                listOfApis = app[0].active_apis
+                listOfApis = app[0].ready_apis
 
             if api[0].name not in listOfApis:
                 listOfApis.append(api[0].name)
+            else:
+                action = None
+
+            if app[0].usage_plans is None:
+                listUsagePlan = []
+            else:
+                listUsagePlan = app[0].usage_plans
+
+            if api[0].usage_plan_id not in listUsagePlan:
+                listUsagePlan.append(api[0].usage_plan_id)
             else:
                 action = None
 
@@ -131,7 +141,7 @@ def addReadyApiToUsagePlan(request):
                 'API_KEY'
             )
 
-            app.update(active_apis=listOfApis)
+            app.update(ready_apis=listOfApis, usage_plans=listUsagePlan)
 
             return response.MessageWithStatusAndSuccess(True, 'Api added to app.', status.HTTP_200_OK)
         else:
