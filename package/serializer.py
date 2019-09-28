@@ -5,8 +5,8 @@ from rest_framework import serializers
 from . import imports
 
 
-# Validate Api Key Serializers
-class ValidateApiKeySerializer(serializers.Serializer):
+# Api Key Serializers
+class ApiKeySerializer(serializers.Serializer):
     api_key = serializers.CharField(required=True)
 
 

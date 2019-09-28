@@ -48,7 +48,7 @@ def packageReadyApiCallInference(request):
 @permission_classes((AllowAny,))
 def validateApiKey(request):
     if request.method == 'POST':
-        serializer = ValidateApiKeySerializer(data=request.data)
+        serializer = ApiKeySerializer(data=request.data)
         if serializer.is_valid():
             try:
                 app = Apps.objects.get(apikey_id=request.data.get('api_key'))
@@ -59,6 +59,23 @@ def validateApiKey(request):
                     return response.MessageWithStatusAndSuccess(True, 'Api key is valid.', status.HTTP_200_OK)
                 else:
                     return response.Error400WithMessage('Invalid api key.')
+        else:
+            return response.SerializerError(details=serializer.errors)
+    else:
+        return response.Error400WithMessage('Bad Request.')
+
+
+@api_view(['POST'])
+@permission_classes((AllowAny,))
+def activeApiList(request):
+    if request.method == 'POST':
+        serializer = ApiKeySerializer(data=request.data)
+        if serializer.is_valid():
+            app = Apps.objects.get(apikey_id=request.data.get('api_key'))
+            active_models = {
+                'ready_apis': app.ready_apis
+            }
+            return response.MessageWithStatusSuccessAndData(True, 'Active Api List.', active_models, status.HTTP_200_OK)
         else:
             return response.SerializerError(details=serializer.errors)
     else:
