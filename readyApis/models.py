@@ -29,8 +29,8 @@ class ReadyApis(models.Model):
     image_url = models.CharField(
         "Image", "image_url", max_length=2083, null=True, blank=True)
     cloud_url = models.CharField(max_length=255, unique=True)
-    usage_plan = models.CharField(
-        "Usage Plan", "usage_plan", max_length=255, null=True, blank=True)
+    usage_plan_id = models.CharField(
+        "Usage Plan", "usage_plan_id", max_length=255, null=True, blank=True)
     use_cases = models.TextField(
         "Use Cases", "use_cases", null=True, blank=True)
     apikey_stage = models.CharField(

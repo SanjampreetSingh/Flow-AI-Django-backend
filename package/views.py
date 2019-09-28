@@ -3,8 +3,8 @@ import requests
 
 # Django Rest Framework Files
 from rest_framework import status
-from rest_framework.permissions import IsAuthenticated
-
+from rest_framework.permissions import AllowAny
+from rest_framework.decorators import api_view, permission_classes, authentication_classes
 # locals
 from .imports import *
 
@@ -33,31 +33,12 @@ def packageReadyApiCallInference(request):
             req = requests.post(
                 api[0].cloud_url, data=data, headers=headers)
 
-            return Response(
-                {
-                    'success': True,
-                    'message': 'Ready api demo.',
-                    'data': {
-                        'demoData': req.json()
-                    }
-                },
-                status=status.HTTP_200_OK)
-        else:
-            return Response(
-                {
-                    'success': False,
-                    'message': 'Invalid data.',
-                    'error':
-                    {
-                        'details': serializer.errors
-                    }
-                },
-                status=status.HTTP_400_BAD_REQUEST)
+            inference_response = {
+                'demoData': req.json()
+            }
 
+            return response.MessageWithStatusSuccessAndData(True, 'Ready api demo.', inference_response, status.HTTP_200_OK)
+        else:
+            return response.SerializerError(serializer.errors)
     else:
-        return Response(
-            {
-                'success': False,
-                'message': 'Bad Request.'
-            },
-            status=status.HTTP_400_BAD_REQUEST)
+        return response.Error400WithMessage('Bad Request.')

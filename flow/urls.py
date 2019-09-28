@@ -19,6 +19,7 @@ from django.views.generic.base import RedirectView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('', include('comman.package_urls')),
     re_path(r'^$', RedirectView.as_view(url='https://theflowai.com')),
     path('api/', include([
         path('auth/', include('rest_framework_social_oauth2.urls')),
