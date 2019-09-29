@@ -16,10 +16,16 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include, re_path
 from django.views.generic.base import RedirectView
-
+# From USER VIEW
+from users.views import (
+    verifyEmail,
+)
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('comman.package_urls')),
+    # Verify user email From USER VIEW
+    re_path(
+        r'^verify/email/(?P<uidb64>[0-9A-Za-z_\-]+)/(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/$', verifyEmail, name='verify_user_email'),
     re_path(r'^$', RedirectView.as_view(url='https://theflowai.com')),
     path('api/', include([
         path('auth/', include('rest_framework_social_oauth2.urls')),
