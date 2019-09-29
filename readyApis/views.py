@@ -30,8 +30,7 @@ from comman import response
 
 # Ready Api's List
 class ReadyApiList(ListAPIView):
-    permission_classes = (IsAuthenticated,)
-    authentication_classes = (JSONWebTokenAuthentication,)
+    permission_classes = (AllowAny,)
 
     def get_queryset(self):
         category = self.request.query_params.get('category', None)
@@ -52,8 +51,7 @@ class ReadyApiList(ListAPIView):
 
 # Ready Api's Retrieve
 class ReadyApiRetrieve(RetrieveAPIView):
-    permission_classes = (IsAuthenticated,)
-    authentication_classes = (JSONWebTokenAuthentication,)
+    permission_classes = (AllowAny,)
     lookup_field = 'reference_url'
 
     def retrieve(self, request, reference_url):
@@ -67,8 +65,7 @@ class ReadyApiRetrieve(RetrieveAPIView):
 
 # Ready Api's Media List
 class ReadyApiMediaList(ListAPIView):
-    permission_classes = (IsAuthenticated,)
-    authentication_classes = (JSONWebTokenAuthentication,)
+    permission_classes = (AllowAny,)
 
     def get_queryset(self):
         category = self.request.query_params.get('category', None)
@@ -89,8 +86,7 @@ class ReadyApiMediaList(ListAPIView):
 
 # Ready Api Category List
 class ReadyApiCategoryList(ListAPIView):
-    permission_classes = (IsAuthenticated,)
-    authentication_classes = (JSONWebTokenAuthentication,)
+    permission_classes = (AllowAny,)
 
     def list(self, request):
         queryset = ReadyApiCategory.objects.all()
