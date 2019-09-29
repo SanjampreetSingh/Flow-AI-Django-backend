@@ -1,8 +1,8 @@
 from .base import *
 
-DEBUG = False
+DEBUG = True
 
-ALLOWED_HOSTS = ['api.theflowai.com', 'localhost', 'www.api.theflowai.com']
+ALLOWED_HOSTS = ['api.theflowai.com', 'localhost']
 
 
 DATABASES = {
@@ -38,7 +38,7 @@ CORS_ORIGIN_ALLOW_ALL = False
 CORS_ORIGIN_WHITELIST = [
     'https://theflowai.com',
     'https://www.theflowai.com',
-    'https://flow-fe.kmvsingh007.now.sh/'
+    'https://flow-fe.kmvsingh007.now.sh'
 ]
 
 SENDGRID_API_KEY = "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"
