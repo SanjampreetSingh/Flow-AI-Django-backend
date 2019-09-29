@@ -18,7 +18,7 @@ def packageReadyApiCallInference(request):
             apikey = request.data.get('api_key')
 
             api = ReadyApis.objects.filter(
-                reference_api_call=request.data.get('api_name'))
+                reference_url=request.data.get('api_name'))
 
             api_data = {
                 'data': request.data.get('data')
