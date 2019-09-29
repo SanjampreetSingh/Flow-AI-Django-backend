@@ -1,6 +1,6 @@
 from .base import *
 
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['api.theflowai.com', 'localhost']
 
@@ -40,9 +40,3 @@ CORS_ORIGIN_WHITELIST = [
     'https://www.theflowai.com',
     'https://flow-fe.kmvsingh007.now.sh'
 ]
-
-# SENDGRID_API_KEY = "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"
-# EMAIL_HOST = 'smtp.mailtrap.io'
-# EMAIL_HOST_USER = 'afe9d617378e04'
-# EMAIL_HOST_PASSWORD = '8b6846f7bfb7cc'
-# EMAIL_PORT = '2525'
