@@ -95,7 +95,7 @@ urlpatterns = [
              name='ready_api_category_list'),
 
         # Ready Api Demo From READY API VIEW
-        path('api/demo', readyApiDemo, name='ready_api_category_list'),
+        path('demo', readyApiDemo, name='ready_api_category_list'),
     ])),
 
 ]

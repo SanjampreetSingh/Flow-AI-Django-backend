@@ -1,6 +1,6 @@
 from .base import *
 
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['167.71.236.151', 'api.theflowai.com', 'localhost']
 
@@ -34,8 +34,8 @@ REST_FRAMEWORK = {
 }
 
 
-CORS_ORIGIN_ALLOW_ALL = True
+CORS_ORIGIN_ALLOW_ALL = False
 CORS_ORIGIN_WHITELIST = [
-    # 'http://localhost:8000',
-    # 'http://localhost:8080',
+    'https://theflowai.com',
+    'https://www.theflowai.com',
 ]
