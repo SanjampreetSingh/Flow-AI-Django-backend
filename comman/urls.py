@@ -73,7 +73,7 @@ urlpatterns = [
         # Default Router for USER PREFIX
         path('', include(users_router.urls)),
         # Add ReadyApi To UsagePlan From APP VIEW
-        path('ready/app/activate', addReadyApiToUsagePlan),
+        path('ready/app/activate/', addReadyApiToUsagePlan),
 
     ])),
 
@@ -95,7 +95,7 @@ urlpatterns = [
              name='ready_api_category_list'),
 
         # Ready Api Demo From READY API VIEW
-        path('demo', readyApiDemo, name='ready_api_category_list'),
+        path('demo/', readyApiDemo, name='ready_api_category_list'),
     ])),
 
 ]
