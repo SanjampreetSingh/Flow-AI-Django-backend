@@ -40,3 +40,5 @@ CORS_ORIGIN_WHITELIST = [
     'https://www.theflowai.com',
     'https://flow-fe.kmvsingh007.now.sh/'
 ]
+
+SENDGRID_API_KEY = "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"
