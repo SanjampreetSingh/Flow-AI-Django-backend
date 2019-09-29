@@ -76,7 +76,7 @@ def registerUser(request):
         serializer = UserSerializer(data=request.data)
         if serializer.is_valid():
             serializer.validated_data['active'] = True
-            serializer.validated_data['verified'] = False
+            serializer.validated_data['verified'] = True
             serializer.validated_data['complete'] = False
             serializer.validated_data['user_type'] = 'IN'
             user = serializer.save()
