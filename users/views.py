@@ -82,8 +82,19 @@ def registerUser(request):
             user = serializer.save()
 
             # sending verification email
-            loop.run_in_executor(
-                None, sendVerificationMail, user, serializer.validated_data['email'])
+            mail_subject = 'Welcome to Flow!'
+            message = render_to_string('verify_email.html', {
+                'user': user,
+                'uid': urlsafe_base64_encode(force_bytes(user.pk)),
+                'token': signup.account_activation_token.make_token(user),
+            })
+            email = EmailMessage(
+                mail_subject, message, 'Flow <no-reply@theflowai.com> ', to=[to_email]
+            )
+            email.content_subtype = "html"
+            email.send()
+            # loop.run_in_executor(
+            #     None, sendVerificationMail, user, serializer.validated_data['email'])
 
             return response.MessageWithStatusAndSuccess(True, 'User registered successfully.', status.HTTP_201_CREATED)
         else:
