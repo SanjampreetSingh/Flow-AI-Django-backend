@@ -38,5 +38,6 @@ CORS_ORIGIN_ALLOW_ALL = False
 CORS_ORIGIN_WHITELIST = [
     'https://theflowai.com',
     'https://www.theflowai.com',
-    'https://flow-fe.kmvsingh007.now.sh'
+    'http://theflowai.com',
+    'http://www.theflowai.com',
 ]
