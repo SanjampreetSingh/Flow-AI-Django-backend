@@ -50,15 +50,13 @@ def validateApiKey(request):
     if request.method == 'POST':
         serializer = ApiKeySerializer(data=request.data)
         if serializer.is_valid():
-            try:
-                app = Apps.objects.get(apikey_id=request.data.get('api_key'))
-            except Apps.DoesNotExist:
-                app = None
+            app = Apps.objects.filter(
+                apikey_value=request.data.get('api_key'))
 
-                if app is not None:
-                    return response.MessageWithStatusAndSuccess(True, 'Api key is valid.', status.HTTP_200_OK)
-                else:
-                    return response.Error400WithMessage('Invalid api key.')
+            if app.count() == 0:
+                return response.Error400WithMessage('Invalid api key.')
+            else:
+                return response.MessageWithStatusAndSuccess(True, 'Api key is valid.', status.HTTP_200_OK)
         else:
             return response.SerializerError(details=serializer.errors)
     else:
@@ -71,10 +69,16 @@ def activeApiList(request):
     if request.method == 'POST':
         serializer = ApiKeySerializer(data=request.data)
         if serializer.is_valid():
-            app = Apps.objects.get(apikey_id=request.data.get('api_key'))
-            active_models = {
-                'ready_apis': app.ready_apis
-            }
+            active_models = {}
+            try:
+                app = Apps.objects.filter(
+                    apikey_value=request.data.get('api_key'))
+                active_models = {
+                    'ready_apis': app[0].ready_apis
+                }
+            except:
+                pass
+
             return response.MessageWithStatusSuccessAndData(True, 'Active Api List.', active_models, status.HTTP_200_OK)
         else:
             return response.SerializerError(details=serializer.errors)
