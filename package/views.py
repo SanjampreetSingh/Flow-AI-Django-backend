@@ -77,7 +77,7 @@ def activeApiList(request):
                     'ready_apis': app[0].ready_apis
                 }
             except:
-                pass
+                return response.Error400WithMessage('Invalid api key.')
 
             return response.MessageWithStatusSuccessAndData(True, 'Active Api List.', active_models, status.HTTP_200_OK)
         else:
