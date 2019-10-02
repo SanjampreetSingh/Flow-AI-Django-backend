@@ -16,7 +16,7 @@ class ReadyApiSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = models.ReadyApis
-        fields = ['name', 'category', 'active', 'tagline', 'description', 'image_url',
+        fields = ['id', 'name', 'category', 'active', 'tagline', 'description', 'image_url',
                   'use_cases', 'recommendations', 'price', 'tag', 'reference_url']
 
 
@@ -27,7 +27,7 @@ class ReadyApiMediaSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = models.ReadyApiMedia
-        fields = ['category', 'media', 'url']
+        fields = ['id', 'category', 'media', 'url']
 
 
 # Ready Api Demo Serializers
