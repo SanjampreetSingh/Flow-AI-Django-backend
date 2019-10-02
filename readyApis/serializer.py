@@ -6,7 +6,7 @@ from . import models
 class ReadyApiCategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = models.ReadyApiCategory
-        fields = "__all__"
+        fields = ['id', 'name']
 
 
 # Ready Api Serializer
@@ -16,7 +16,8 @@ class ReadyApiSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = models.ReadyApis
-        fields = "__all__"
+        fields = ['name', 'category', 'active', 'tagline', 'description', 'image_url',
+                  'use_cases', 'recommendations', 'price', 'tag', 'reference_url']
 
 
 # Ready Api Media Serializer
@@ -26,7 +27,7 @@ class ReadyApiMediaSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = models.ReadyApiMedia
-        fields = "__all__"
+        fields = ['category', 'media', 'url']
 
 
 # Ready Api Demo Serializers
