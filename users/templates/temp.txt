@@ -1,12 +1,18 @@
 {% extends "email/base.html" %} {% block content %} {% autoescape off %}
 
 <div style="max-width:600px;margin:0 auto">
+
     <p style="margin:1rem 0.5rem;line-height:1.5">Hi,</p>
-    <p style="margin:1rem 0.5rem;line-height:1.5">Welcome to Flow! Before you get started, we need you to verify your registered email address (<span style="font-weight:bold"><a href="mailto:{{ user.email }}" target="_blank">{{ user.email }}</a></span>). This will let you receive notifications and
+    
+    <p style="margin:1rem 0.5rem;line-height:1.5">Welcome to Flow!</p>
+    
+    <p style="margin:1rem 0.5rem;line-height:1.5">Before you get started, we need you to verify your registered email address (<span style="font-weight:bold"><a href="mailto:{{ user.email }}" target="_blank">{{ user.email }}</a></span>). This will let you receive notifications and
         password resets from Flow.</p>
+    
     <div style="text-align:center">
         <a href="https://theflowai.com/{% url 'verify_user_email' uidb64=uid token=token %}" style="display:inline-block;background-color:#000;border-radius:2em;color:white;margin:1rem auto;padding:1em 2em;min-width:200px;font-weight:bold;text-decoration:none;text-transform:uppercase"
             target="_blank">Verify Account</a>
     </div>
+
 </div>
 {% endautoescape %} {% endblock %}
