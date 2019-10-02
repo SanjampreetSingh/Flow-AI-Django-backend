@@ -18,7 +18,9 @@ from django.urls import path, include, re_path
 from django.views.generic.base import RedirectView
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    path('admin/', include(('admin_honeypot.urls',
+                            'admin_honeypot'), namespace='admin_honeypot')),
+    path('flow-admin/', admin.site.urls),
     path('', include('comman.package_urls')),
     re_path(r'^$', RedirectView.as_view(url='https://theflowai.com')),
     path('api/', include([
