@@ -49,8 +49,7 @@ urlpatterns = [
     path('authenticate/', Authenticate.as_view(), name='authenticate_user'),
 
     # Verify user email From USER VIEW
-    re_path(
-        r'^verify/email/(?P<uidb64>[0-9A-Za-z_\-]+)/(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/$', verifyEmail, name='verify_user_email'),
+    path('verify/email/', verifyEmail, name='verify_user_email'),
 
     # Verify JWT Token
     path('verify/token/', verify_jwt_token),

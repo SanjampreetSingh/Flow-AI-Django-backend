@@ -111,8 +111,10 @@ def sendVerificationMail(user, to_email):
 # Verify email
 @api_view(['POST', 'PUT'])
 @permission_classes((AllowAny,))
-def verifyEmail(request, uidb64, token):
+def verifyEmail(request):
     # Check user exists by decoding url code
+    uidb64 = request.data.get('uidb64')
+    token = request.data.get('token')
     try:
         uid = force_text(urlsafe_base64_decode(uidb64))
         user = Users.objects.get(pk=uid)
