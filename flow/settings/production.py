@@ -40,4 +40,5 @@ CORS_ORIGIN_WHITELIST = [
     'https://www.theflowai.com',
     'http://theflowai.com',
     'http://www.theflowai.com',
+    'https://theflowai.now.sh/'
 ]
