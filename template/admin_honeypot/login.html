@@ -1,0 +1,14 @@
+{% extends "admin/login.html" %}
+{% load static %}
+{% block title %}{{ title }} | {{ site_title|default:_('Flow Admin') }}{%endblock %}
+{% block extrahead %}<link rel="shortcut icon" type="image/png" href="{% static 'favicon.ico' %}"/>{% endblock %}
+
+{% block branding %}
+<h1 id="site-name">
+    <a href="{% url 'admin:index' %}">
+        <img src="{% static 'img/flow-logo.svg' %}" height="50px" />
+    </a>
+</h1>
+{% endblock %}
+
+{% block nav-global %}{% endblock %}
