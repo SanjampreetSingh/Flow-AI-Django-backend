@@ -22,6 +22,13 @@ class UserSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
+# User Read Serializer
+class UserReadSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.Users
+        fields = ['id', 'email', 'active', 'complete', 'verified']
+
+
 # Serializer which accepts an OAuth2 access token and provider.
 class SocialSerializer(serializers.Serializer):
     provider = serializers.CharField(max_length=255, required=True)

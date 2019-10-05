@@ -27,7 +27,12 @@ from social_core.exceptions import MissingBackend, AuthTokenError, AuthForbidden
 
 # Local
 from .models import (Users)
-from .serializer import (UserSerializer, SocialSerializer, CheckUserSerializer)
+from .serializer import (
+    UserSerializer,
+    SocialSerializer,
+    CheckUserSerializer,
+    UserReadSerializer
+)
 from .token import signup
 from comman import response
 
@@ -174,7 +179,7 @@ def userDetails(request):
         user = None
 
     if user is not None:
-        serializer = UserSerializer(user).data
+        serializer = UserReadSerializer(user).data
         response_data = {
             'user': serializer
         }
