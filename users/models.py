@@ -35,7 +35,7 @@ class UserManager(BaseUserManager):
             password=''.join(random.choices(
                 string.ascii_letters + string.digits, k=16)),
             user_type=user_type,
-            is_verified=False,
+            is_verified=True,
             is_complete=False,
         )
         return user
