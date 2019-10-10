@@ -11,12 +11,12 @@ from users.views import (
     OAuthenticate
 )
 # From APPS VIEW
-from apps.views import(
+from apps.views import (
     AppsView,
     addReadyApiToUsagePlan
 )
 # From READY API VIEW
-from readyApis.views import(
+from readyApis.views import (
     ReadyApiList,
     ReadyApiRetrieve,
     ReadyApiMediaList,
@@ -24,10 +24,14 @@ from readyApis.views import(
     readyApiDemo
 )
 # From MODULES VIEW
-from modules.views import(
+from modules.views import (
     ModuleList,
     ModuleDetails
 )
+# From USAGE READY APIS VIEW
+# from usageReadyApis.views import (
+#     ReadyUsageBucketsView
+# )
 
 
 # Router for User PREFIX
@@ -58,7 +62,9 @@ urlpatterns = [
     path('user-details/', userDetails, name='user_details'),
 
     # Oauth authenticate user From USER VIEW
-    path('oauthenticate/', OAuthenticate.as_view(), name='oauthenticate_user'),
+    re_path(r'^oauthenticate/(?P<provider>[A-Za-z_\-]+)/(?P<access_token>[0-9A-Za-z_\-]+)/$', OAuthenticate.as_view(),
+            name='oauthenticate_user'),
+
 
     # Modules list From MODULES VIEW
     path('module/', ModuleList.as_view(), name="module_list"),

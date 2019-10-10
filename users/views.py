@@ -193,11 +193,12 @@ class OAuthenticate(generics.GenericAPIView):
     serializer_class = SocialSerializer
     permission_classes = [AllowAny]
 
-    def post(self, request):
+    def post(self, request, provider, access_token):
         # Authenticate user through the provider and access_token
-        serializer = self.serializer_class(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        provider = serializer.data.get('provider', None)
+        # serializer = self.serializer_class(data=request.data)
+        # serializer.is_valid(raise_exception=True)
+        provider = provider
+        # serializer.data.get('provider', None)
         strategy = load_strategy(request)
 
         try:
@@ -209,7 +210,8 @@ class OAuthenticate(generics.GenericAPIView):
 
         try:
             if isinstance(backend, BaseOAuth2):
-                access_token = serializer.data.get('access_token')
+                access_token = access_token
+                # serializer.data.get('access_token')
             user = backend.do_auth(access_token)
 
         except HTTPError as error:
