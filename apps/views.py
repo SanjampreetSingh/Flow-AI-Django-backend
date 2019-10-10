@@ -57,7 +57,10 @@ class AppsView(viewsets.ModelViewSet):
     def create(self, request):
         if request.method == 'POST':
             reference_url = request.data.get('reference_url')
-            if Apps.objects.filter(reference_url=reference_url, user_id=request.user).exists() is not True:
+            if (request.user.complete is False) and (Apps.objects.filter(user_id=request.user).count() >= 1):
+                return response.Error400WithMessage('Only a single app can be created in beta version.')
+
+            elif Apps.objects.filter(reference_url=reference_url, user_id=request.user).exists() is not True:
                 serializer = AppWriteSerializer(data=request.data)
                 if serializer.is_valid():
                     serializer.validated_data['user'] = request.user
