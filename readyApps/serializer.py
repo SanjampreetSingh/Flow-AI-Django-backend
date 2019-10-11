@@ -2,50 +2,11 @@ from rest_framework import serializers
 from . import models
 
 
-# ReadyApps Write Serializers
-class ReadyAppWriteSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = models.ReadyApps
-        fields = "__all__"
-
-
-# ReadyApps Read Serializers
-class ReadyAppReadSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = models.ReadyApps
-        fields = [
-            'id', 'user', 'name', 'description', 'apikey_value', 'reference_url', 'ready_apis'
-        ]
-
-
-# ReadyAppImage Serializer
-class ReadyAppImageSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = models.ReadyAppImage
-        fields = "__all__"
-
-
-# Ready DeActivate Serializers
-class ReadyActionsSerializer(serializers.Serializer):
+# App Activate ReadyApps Serializer
+class AppActivateReadyAppsSerializer(serializers.Serializer):
     """
-    Serializer which accepts app_id, api_id and action.
+    Serializer which accepts app_reference_url and api_id.
+    Used to link app with Ready API's.
     """
-    ACTION_CHOICES = (
-        ('A'),
-        ('R'),
-    )
-
-    app_id = serializers.IntegerField(required=True)
+    app_reference_url = serializers.CharField(required=True)
     api_id = serializers.IntegerField(required=True)
-    action = serializers.ChoiceField(choices=ACTION_CHOICES, required=True)
-
-
-# Ready Api Demo Serializers
-class ReadyApiDemoSerializer(serializers.Serializer):
-    """
-    Serializer which accepts api_id.
-    """
-
-api_name = serializers.CharField(required=True)
-api_key = serializers.CharField(required=True)
-data = serializers.CharField()

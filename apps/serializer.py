@@ -31,12 +31,3 @@ class AppReadSerializer(serializers.ModelSerializer):
 #     class Meta:
 #         model = models.AppImage
 #         fields = "__all__"
-
-
-class AppActivateReadyApisSerializer(serializers.Serializer):
-    """
-    Serializer which accepts app_reference_url and api_id.
-    Used to link app with Ready API's.
-    """
-    app_reference_url = serializers.CharField(required=True)
-    api_id = serializers.IntegerField(required=True)

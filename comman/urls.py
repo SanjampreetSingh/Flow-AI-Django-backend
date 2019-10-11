@@ -12,8 +12,7 @@ from users.views import (
 )
 # From APPS VIEW
 from apps.views import (
-    AppsView,
-    addReadyApiToUsagePlan
+    AppsView
 )
 # From READY API VIEW
 from readyApis.views import (
@@ -32,7 +31,10 @@ from modules.views import (
 # from usageReadyApis.views import (
 #     ReadyUsageBucketsView
 # )
-
+# From READY APP VIEW
+from readyApps.views import (
+    addReadyApiToApp
+)
 
 # Router for User PREFIX
 users_router = DefaultRouter()
@@ -77,8 +79,8 @@ urlpatterns = [
     path('user/', include([
         # Default Router for USER PREFIX
         path('', include(users_router.urls)),
-        # Add ReadyApi To UsagePlan From APP VIEW
-        path('ready/app/activate/', addReadyApiToUsagePlan),
+        # Add ReadyApi To App From READY APP VIEW
+        path('ready/app/activate/', addReadyApiToApp),
 
     ])),
 
