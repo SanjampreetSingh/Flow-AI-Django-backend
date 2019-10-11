@@ -6,9 +6,9 @@ from readyApis.models import (
     ReadyApis
 )
 
-# from usageReadyApis.models import (
-#     ReadyUsageBuckets
-# )
+from readyApiUsages.models import (
+    ReadyApiUsageBuckets
+)
 
 
 from .serializer import (

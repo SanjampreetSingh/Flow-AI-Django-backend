@@ -43,7 +43,7 @@ INSTALLED_APPS = [
     'modules',
     'package',
     'nuxtApp',
-    # 'usageReadyApis',
+    'readyApiUsages',
     'readyApps',
 ]
 

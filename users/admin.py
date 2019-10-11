@@ -10,13 +10,13 @@ from . import models
 User = get_user_model()
 
 
-class UserAdmin(BaseUserAdmin):
+class UsersAdmin(BaseUserAdmin):
     form = UserAdminChangeForm
     add_form = UserAdminCreationForm
 
     list_display = ('email', 'user_type', 'active', 'staff',
                     'admin', 'verified', 'complete', 'last_login', 'created_at')
-    list_filter = ('admin', 'user_type')
+    list_filter = ('admin', 'user_type', 'verified', 'complete')
     fieldsets = (
         (None, {'fields': ('email', 'password')}),
         ('User Info', {'fields': ('user_type',)}),
@@ -26,12 +26,12 @@ class UserAdmin(BaseUserAdmin):
     add_fieldsets = (
         (None, {
             'classes': ('wide',),
-            'fields': ('email', 'password1', 'password2')}
-         ),
+            'fields': ('email', 'password1', 'password2')
+        }),
     )
     search_fields = ('email',)
     ordering = ('email',)
     filter_horizontal = ()
 
 
-admin.site.register(models.Users, UserAdmin)
+admin.site.register(models.Users, UsersAdmin)

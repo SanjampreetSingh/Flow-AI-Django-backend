@@ -9,7 +9,7 @@ from rest_framework_jwt.authentication import JSONWebTokenAuthentication
 # Local
 from readyApis.models import (ReadyApis)
 from apps.models import (Apps)
-# from usageReadyApis.models import (ReadyUsageBuckets)
+from readyApiUsages.models import (ReadyApiUsageBuckets)
 from .serializer import (
     AppActivateReadyAppsSerializer
 )
@@ -39,7 +39,7 @@ def addReadyApiToApp(request):
             app = Apps.objects.filter(
                 reference_url=serializer.data.get('app_reference_url'))
             api = ReadyApis.objects.filter(pk=serializer.data.get('api_id'))
-            # ReadyUsageBuckets.objects.filter(app=app[0]).update(active=True)
+            ReadyApiUsageBuckets.objects.filter(app=app[0]).update(active=True)
 
             if app[0].ready_apis is None:
                 listOfApis = []

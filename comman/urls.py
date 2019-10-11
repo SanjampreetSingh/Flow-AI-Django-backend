@@ -27,20 +27,27 @@ from modules.views import (
     ModuleList,
     ModuleDetails
 )
-# From USAGE READY APIS VIEW
-# from usageReadyApis.views import (
-#     ReadyUsageBucketsView
-# )
+# From READY API USAGES VIEW
+from readyApiUsages.views import (
+    ReadyApiUsageBucketsView
+)
 # From READY APP VIEW
 from readyApps.views import (
     addReadyApiToApp
 )
 
-# Router for User PREFIX
-users_router = DefaultRouter()
+# Router for app PREFIX
+apps_router = DefaultRouter()
 
 # App ViewSet From App VIEW
-users_router.register('app', AppsView)
+apps_router.register('app', AppsView)
+
+# Router for usage-ready-api PREFIX
+ready_api_usages_router = DefaultRouter()
+
+# ReadyApiUsageBucketsView ViewSet From READY API USAGES
+ready_api_usages_router.register(
+    'usage-ready-api', ReadyApiUsageBucketsView)
 
 
 urlpatterns = [
@@ -77,8 +84,10 @@ urlpatterns = [
 
     # User PREFIX for actions used by users
     path('user/', include([
-        # Default Router for USER PREFIX
-        path('', include(users_router.urls)),
+        # Default Router for app PREFIX
+        path('', include(apps_router.urls)),
+        # Default Router for usage-ready-api PREFIX
+        path('', include(ready_api_usages_router.urls)),
         # Add ReadyApi To App From READY APP VIEW
         path('ready/app/activate/', addReadyApiToApp),
 
