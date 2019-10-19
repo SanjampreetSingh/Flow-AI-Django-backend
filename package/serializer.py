@@ -14,4 +14,4 @@ class ApiKeySerializer(serializers.Serializer):
 class InferenceSerializer(serializers.Serializer):
     api_name = serializers.CharField(required=True)
     api_key = serializers.CharField(required=True)
-    data = serializers.CharField()
+    # data = serializers.CharField()

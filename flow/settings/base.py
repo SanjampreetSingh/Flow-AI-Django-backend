@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'nuxtApp',
     'readyApiUsages',
     'readyApps',
+    'readyApiUsagePerModels',
 ]
 
 MIDDLEWARE = [

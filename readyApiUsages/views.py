@@ -14,18 +14,18 @@ from rest_framework.decorators import api_view, permission_classes, authenticati
 from rest_framework_jwt.authentication import JSONWebTokenAuthentication
 
 # Local
-from users.models import (Users)
-from readyApis.models import (ReadyApis)
-from .models import (ReadyApiUsageBuckets)
-from .serializer import (
-    ReadyApiUsageBucketsWriteSerializer,
-    ReadyApiUsageBucketsReadSerializer
-)
 from apps.models import (
     Apps
 )
 from users.models import (
     Users
+)
+from .models import (
+    ReadyApiUsageBuckets
+)
+from .serializer import (
+    ReadyApiUsageBucketsWriteSerializer,
+    ReadyApiUsageBucketsReadSerializer
 )
 
 # from comman.boto import()
