@@ -52,10 +52,6 @@ class ReadyApiUsageBucketsView(viewsets.ModelViewSet):
     def create(self, request):
         return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
-    def retrieve(self, request, pk=None):
-        # to be coded
-        return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
-
     def update(self, request, pk=None):
         # to be coded
         return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
