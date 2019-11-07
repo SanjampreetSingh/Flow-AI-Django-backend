@@ -27,6 +27,9 @@ from .serializer import (
     ReadyApiUsageBucketsWriteSerializer,
     ReadyApiUsageBucketsReadSerializer
 )
+from .permissions import (
+    IsReadyApiUsageBucketsAppOwner
+)
 
 # from comman.boto import()
 from comman.permissions import (HasVerifiedEmail)
@@ -38,13 +41,38 @@ loop = asyncio.get_event_loop()
 
 class ReadyApiUsageBucketsView(viewsets.ModelViewSet):
     queryset = ReadyApiUsageBuckets.objects.all()
-    permission_classes = [IsAuthenticated, HasVerifiedEmail]
     authentication_classes = [JSONWebTokenAuthentication]
 
     def get_serializer_class(self):
         if self.request.method == 'POST':
             return ReadyApiUsageBucketsWriteSerializer
         return ReadyApiUsageBucketsReadSerializer
+
+    def get_permissions(self):
+        if self.action in ('retrieve',):
+            self.permission_classes = [
+                IsAuthenticated,
+                HasVerifiedEmail,
+                IsReadyApiUsageBucketsAppOwner
+            ]
+        else:
+            self.permission_classes = [
+                IsAuthenticated,
+                HasVerifiedEmail
+            ]
+        return super(self.__class__, self).get_permissions()
+
+    def retrieve(self, request, pk=None):
+        try:
+            readyApiUsageBuckets = ReadyApiUsageBuckets.objects.get(id=pk)
+        except ReadyApiUsageBuckets.DoesNotExist:
+            return response.MessageWithStatusAndSuccess(False, 'Ready api usage bucket not found.', status.HTTP_404_NOT_FOUND)
+
+        serializer = ReadyApiUsageBucketsReadSerializer(readyApiUsageBuckets)
+        response_data = {
+            'readyApiData': serializer.data
+        }
+        return response.MessageWithStatusSuccessAndData(True, 'Ready api usage bucket details.', response_data, status.HTTP_200_OK)
 
     def list(self, request):
         return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)

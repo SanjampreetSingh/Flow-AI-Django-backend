@@ -18,7 +18,7 @@ class HasVerifiedEmail(permissions.BasePermission):
 
 
 class IsApplicationOwner(permissions.BasePermission):
-    message = 'You must be owner of Application'
+    message = 'User must be owner of the application.'
 
     def has_permission(self, request, view):
         user_id = int(view.kwargs['user_id'])

@@ -14,5 +14,5 @@ class ReadyApiUsageBucketsReadSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.ReadyApiUsageBuckets
         fields = [
-            'bucket', 'usage', 'threshold',
+            'bucket', 'usage', 'threshold', 'app', 'user'
         ]
