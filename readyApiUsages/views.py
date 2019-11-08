@@ -51,24 +51,17 @@ class ReadyApiUsageBucketsRetrieve(RetrieveAPIView):
     lookup_field = 'app'
 
     def retrieve(self, request, app):
+        queryset = ReadyApiUsageBuckets.objects.filter(app=app)
+        serializer = ReadyApiUsageBucketsReadSerializer(
+            queryset, many=True)
         try:
-            queryset = ReadyApiUsageBuckets.objects.filter(app=app)
-        except (IndexError, ReadyApiUsageBuckets.DoesNotExist):
-            queryset = None
+            response_data = {
+                'readyApiUsageBucketData': serializer.data[0]
+            }
+        except (IndexError):
+            return response.MessageWithStatusAndSuccess(False, 'Ready api usage bucket not found.', status.HTTP_404_NOT_FOUND)
 
-        if queryset is not None:
-            serializer = ReadyApiUsageBucketsReadSerializer(
-                queryset, many=True)
-            try:
-                response_data = {
-                    'readyApiUsageBucketData': serializer.data[0]
-                }
-            except (IndexError):
-                return response.MessageWithStatusAndSuccess(False, 'Ready api usage bucket not found.', status.HTTP_404_NOT_FOUND)
-
-            return response.MessageWithStatusSuccessAndData(True, 'Ready api usage bucket details.', response_data, status.HTTP_200_OK)
-
-        return response.MessageWithStatusAndSuccess(False, 'Ready api usage bucket not found.', status.HTTP_404_NOT_FOUND)
+        return response.MessageWithStatusSuccessAndData(True, 'Ready api usage bucket details.', response_data, status.HTTP_200_OK)
 
 
 def increase_ready_call(api_key):
