@@ -29,7 +29,7 @@ from modules.views import (
 )
 # From READY API USAGES VIEW
 from readyApiUsages.views import (
-    ReadyApiUsageBucketsView
+    ReadyApiUsageBucketsRetrieve
 )
 # From READY APP VIEW
 from readyApps.views import (
@@ -41,13 +41,6 @@ apps_router = DefaultRouter()
 
 # App ViewSet From App VIEW
 apps_router.register('app', AppsView)
-
-# Router for usage-ready-api PREFIX
-ready_api_usages_router = DefaultRouter()
-
-# ReadyApiUsageBucketsView ViewSet From READY API USAGES
-ready_api_usages_router.register(
-    'usage-ready-api', ReadyApiUsageBucketsView)
 
 
 urlpatterns = [
@@ -87,7 +80,8 @@ urlpatterns = [
         # Default Router for app PREFIX
         path('', include(apps_router.urls)),
         # Default Router for usage-ready-api PREFIX
-        path('', include(ready_api_usages_router.urls)),
+        re_path(r'^usage-ready-api/(?P<app>[-\w]+)/$',
+                ReadyApiUsageBucketsRetrieve.as_view(), name="ready_api_usage_buckets_retrieve"),
         # Add ReadyApi To App From READY APP VIEW
         path('ready/app/activate/', addReadyApiToApp),
 

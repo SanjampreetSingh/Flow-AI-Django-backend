@@ -6,9 +6,13 @@ class IsReadyApiUsageBucketsAppOwner(permissions.BasePermission):
     message = 'User must be owner of the application.'
 
     def has_permission(self, request, view):
-        pk = int(view.kwargs['pk'])
+        app = int(view.kwargs['app'])
         try:
-            readyApiUsageBucket = ReadyApiUsageBuckets.objects.get(id=pk)
+            readyApiUsageBucket = ReadyApiUsageBuckets.objects.filter(app=app)[
+                0]
+        except IndexError:
+            return False
+        try:
             user = readyApiUsageBucket.user.id
         except ReadyApiUsageBuckets.DoesNotExist:
             return False

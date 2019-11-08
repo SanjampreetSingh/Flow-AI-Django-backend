@@ -5,6 +5,7 @@ from django.core.mail import EmailMessage, send_mail
 from django.template.loader import render_to_string
 
 # Django Rest Framework Files
+from rest_framework.generics import RetrieveAPIView
 from rest_framework import viewsets, status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -39,56 +40,35 @@ from comman import response
 loop = asyncio.get_event_loop()
 
 
-class ReadyApiUsageBucketsView(viewsets.ModelViewSet):
-    queryset = ReadyApiUsageBuckets.objects.all()
-    authentication_classes = [JSONWebTokenAuthentication]
+# Ready Api Usage Bucket's Retrieve
+class ReadyApiUsageBucketsRetrieve(RetrieveAPIView):
+    permission_classes = (
+        IsAuthenticated,
+        HasVerifiedEmail,
+        IsReadyApiUsageBucketsAppOwner
+    )
+    authentication_classes = [JSONWebTokenAuthentication, ]
+    lookup_field = 'app'
 
-    def get_serializer_class(self):
-        if self.request.method == 'POST':
-            return ReadyApiUsageBucketsWriteSerializer
-        return ReadyApiUsageBucketsReadSerializer
-
-    def get_permissions(self):
-        if self.action in ('retrieve',):
-            self.permission_classes = [
-                IsAuthenticated,
-                HasVerifiedEmail,
-                IsReadyApiUsageBucketsAppOwner
-            ]
-        else:
-            self.permission_classes = [
-                IsAuthenticated,
-                HasVerifiedEmail
-            ]
-        return super(self.__class__, self).get_permissions()
-
-    def retrieve(self, request, pk=None):
+    def retrieve(self, request, app):
         try:
-            readyApiUsageBuckets = ReadyApiUsageBuckets.objects.get(id=pk)
-        except ReadyApiUsageBuckets.DoesNotExist:
-            return response.MessageWithStatusAndSuccess(False, 'Ready api usage bucket not found.', status.HTTP_404_NOT_FOUND)
+            queryset = ReadyApiUsageBuckets.objects.filter(app=app)
+        except (IndexError, ReadyApiUsageBuckets.DoesNotExist):
+            queryset = None
 
-        serializer = ReadyApiUsageBucketsReadSerializer(readyApiUsageBuckets)
-        response_data = {
-            'readyApiData': serializer.data
-        }
-        return response.MessageWithStatusSuccessAndData(True, 'Ready api usage bucket details.', response_data, status.HTTP_200_OK)
+        if queryset is not None:
+            serializer = ReadyApiUsageBucketsReadSerializer(
+                queryset, many=True)
+            try:
+                response_data = {
+                    'readyApiUsageBucketData': serializer.data[0]
+                }
+            except (IndexError):
+                return response.MessageWithStatusAndSuccess(False, 'Ready api usage bucket not found.', status.HTTP_404_NOT_FOUND)
 
-    def list(self, request):
-        return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+            return response.MessageWithStatusSuccessAndData(True, 'Ready api usage bucket details.', response_data, status.HTTP_200_OK)
 
-    def create(self, request):
-        return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
-
-    def update(self, request, pk=None):
-        # to be coded
-        return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
-
-    def partial_update(self, request, pk=None):
-        return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
-
-    def destroy(self, request, pk=None):
-        return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+        return response.MessageWithStatusAndSuccess(False, 'Ready api usage bucket not found.', status.HTTP_404_NOT_FOUND)
 
 
 def increase_ready_call(api_key):
